@@ -1,0 +1,241 @@
+import React from "react";
+import {
+  FLOWCHART_GAP_TOKEN,
+  countNoteCompletionGaps,
+} from "../../api/reading";
+
+export interface NoteCompletionGapsProps {
+  lines: string[];
+  answer: string[];
+  onChange: (next: string[]) => void;
+  /** First displayed question number for this block (gap labels). */
+  firstQuestionNumber: number;
+  readOnly?: boolean;
+  /** Show bullet before each line (note style). */
+  showBullet?: boolean;
+  /** Placeholder when a line is empty (admin). */
+  emptyLinePlaceholder?: string;
+  /** Extra classes for line text (e.g. exam font size). */
+  lineTextClassName?: string;
+  /** Standard notes, summary paragraph, or official-style client preview. */
+  appearance?:
+    | "note"
+    | "summary"
+    | "summary-official"
+    | "short-answer-official"
+    | "official"
+    | "sentence";
+}
+
+const NoteCompletionGaps: React.FC<NoteCompletionGapsProps> = ({
+  lines,
+  answer,
+  onChange,
+  firstQuestionNumber,
+  readOnly = false,
+  showBullet = true,
+  emptyLinePlaceholder = "Note line…",
+  lineTextClassName = "",
+  appearance = "note",
+}) => {
+  const n = countNoteCompletionGaps(lines);
+  const vals = Array.from({ length: Math.max(0, n) }, (_, i) =>
+    Array.isArray(answer) ? String(answer[i] ?? "") : "",
+  );
+
+  const setVal = (globalIdx: number, v: string) => {
+    if (readOnly) return;
+    const next = [...vals];
+    next[globalIdx] = v;
+    onChange(next);
+  };
+
+  const isSummary = appearance === "summary";
+  const isSummaryOfficial = appearance === "summary-official";
+  const isShortAnswerOfficial = appearance === "short-answer-official";
+  const isOfficial = appearance === "official";
+  const isSentence = appearance === "sentence";
+  const usesOfficialGap =
+    isOfficial || isSentence || isSummaryOfficial || isShortAnswerOfficial;
+  const resolvedLineTextClassName = lineTextClassName || "text-sm";
+  const officialGapClass =
+    "relative inline-flex h-[38px] min-w-[12.5rem] max-w-[15rem] items-stretch overflow-hidden border border-gray-500 bg-white align-middle focus-within:border-2 focus-within:border-[#1683d8]";
+  const gapBoxClassSuffix = usesOfficialGap
+    ? officialGapClass
+    : isSummary
+      ? "relative flex shrink-0 min-h-[42px] min-w-[min(100%,210px)] max-w-[280px] items-stretch overflow-hidden rounded-sm border border-dashed border-[#C0504D] bg-[#FCE4E4] shadow-sm"
+      : "relative flex shrink-0 min-h-[44px] min-w-[min(100%,220px)] max-w-[300px] items-stretch overflow-hidden rounded-md border-2 border-dashed border-rose-300 bg-rose-50/60 shadow-sm";
+  const gapBoxClassInline = usesOfficialGap
+    ? officialGapClass
+    : isSummary
+      ? "relative inline-flex min-h-[36px] min-w-[9rem] max-w-[13rem] items-stretch overflow-hidden align-baseline rounded-sm border border-dashed border-[#C0504D] bg-[#FCE4E4] shadow-sm"
+      : "relative inline-flex min-h-[40px] min-w-[10rem] max-w-[14rem] items-stretch overflow-hidden align-baseline rounded-md border-2 border-dashed border-rose-300 bg-rose-50/60 shadow-sm";
+  const qnClass = usesOfficialGap
+    ? "pointer-events-none absolute inset-0 flex items-center justify-center text-sm font-semibold tabular-nums text-gray-700"
+    : isSummary
+      ? "pointer-events-none absolute inset-0 flex items-center justify-center text-xs font-bold tabular-nums text-gray-900"
+      : "pointer-events-none absolute inset-0 flex items-center justify-center text-xs font-bold tabular-nums text-rose-900";
+
+  const renderGap = (globalIdx: number, variant: "suffix" | "inline") => {
+    const qn = firstQuestionNumber + globalIdx;
+    const boxClass = variant === "suffix" ? gapBoxClassSuffix : gapBoxClassInline;
+    const hasAnswer = vals[globalIdx].trim().length > 0;
+    return (
+      <div key={`g-${globalIdx}`} className={boxClass}>
+        {!hasAnswer && (
+          <span className={qnClass} aria-hidden>
+            {qn}
+          </span>
+        )}
+        <input
+          type="text"
+          value={vals[globalIdx]}
+          onChange={(e) => setVal(globalIdx, e.target.value)}
+          readOnly={readOnly}
+          disabled={readOnly}
+          aria-label={`Gap ${qn}`}
+          className={`ielts-numbered-answer-input relative z-[1] min-w-0 flex-1 bg-transparent px-2.5 text-center text-gray-900 focus:outline-none focus:ring-0 disabled:cursor-default ${
+            usesOfficialGap ? "py-1.5 font-semibold" : "py-2"
+          } ${resolvedLineTextClassName}`}
+          placeholder=""
+          autoComplete="off"
+        />
+      </div>
+    );
+  };
+
+  let g = 0;
+  const items: React.ReactNode[] = [];
+
+  lines.forEach((row, li) => {
+    const line = typeof row === "string" ? row.trim() : "";
+    if (isOfficial && (line.startsWith("#") || line.startsWith("@"))) {
+      const isSectionHeading = line.startsWith("#");
+      const label = line.replace(/^[#@]+\s*/, "");
+      items.push(
+        <li
+          key={li}
+          className={
+            isSectionHeading
+              ? "pt-1 text-base font-bold leading-relaxed text-gray-950"
+              : "pt-1 text-base font-normal leading-relaxed text-gray-900"
+          }
+        >
+          {label}
+        </li>,
+      );
+      return;
+    }
+
+    const suppressBullet = isOfficial && line.startsWith("!");
+    const displayLine = suppressBullet ? line.slice(1).trimStart() : line;
+    if (displayLine.includes(FLOWCHART_GAP_TOKEN)) {
+      const parts = displayLine.split(FLOWCHART_GAP_TOKEN);
+      const inner: React.ReactNode[] = [];
+      for (let pi = 0; pi < parts.length; pi++) {
+        const part = parts[pi] ?? "";
+        if (part) {
+          inner.push(
+            <span
+              key={`${li}-p-${pi}`}
+              className={`${resolvedLineTextClassName} text-gray-900 leading-relaxed`.trim()}
+            >
+              {part}
+            </span>,
+          );
+        }
+        if (pi < parts.length - 1) {
+          const gi = g;
+          g += 1;
+          inner.push(renderGap(gi, "inline"));
+        }
+      }
+      items.push(
+        <li
+          key={li}
+          className={`flex flex-wrap items-center text-gray-900 leading-relaxed ${
+            usesOfficialGap ? "gap-x-3 gap-y-2" : "gap-x-2 gap-y-2 text-sm"
+          }`}
+        >
+          {showBullet && !suppressBullet ? (
+            <span
+              className={`shrink-0 self-start rounded-full bg-gray-700 ${
+                isOfficial ? "mt-[0.7rem] h-1 w-1" : "mt-1.5 h-1.5 w-1.5"
+              }`}
+              aria-hidden
+            />
+          ) : null}
+          <span className="inline-flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2 gap-y-2">
+            {inner}
+          </span>
+        </li>,
+      );
+    } else {
+      const gi = g;
+      g += 1;
+      if (isShortAnswerOfficial) {
+        items.push(
+          <li
+            key={li}
+            className="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-900 leading-relaxed"
+          >
+            {renderGap(gi, "suffix")}
+            <span className={`min-w-0 flex-1 ${lineTextClassName}`.trim()}>
+              {displayLine.trim() ? (
+                displayLine.trim()
+              ) : (
+                <span className="text-gray-400 italic">
+                  {emptyLinePlaceholder}
+                </span>
+              )}
+            </span>
+          </li>,
+        );
+        return;
+      }
+      items.push(
+        <li
+          key={li}
+          className="flex flex-wrap items-end gap-x-3 gap-y-2 text-sm text-gray-900 leading-relaxed"
+        >
+          {showBullet ? (
+            <span
+              className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gray-500"
+              aria-hidden
+            />
+          ) : null}
+          <span className={`min-w-0 flex-1 ${lineTextClassName}`.trim()}>
+            {displayLine.trim() ? (
+              displayLine.trim()
+            ) : (
+              <span className="text-gray-400 italic">{emptyLinePlaceholder}</span>
+            )}
+          </span>
+          {renderGap(gi, "suffix")}
+        </li>,
+      );
+    }
+  });
+
+  return (
+    <ul
+      className={`list-none pl-0 ${
+        isSentence
+          ? "space-y-7"
+          : isShortAnswerOfficial
+            ? "space-y-6"
+          : isSummaryOfficial
+            ? "space-y-4"
+          : isOfficial
+            ? "space-y-3"
+            : isSummary
+              ? "space-y-3"
+              : "space-y-4"
+      }`}
+    >
+      {items}
+    </ul>
+  );
+};
+
+export default NoteCompletionGaps;
