@@ -26,7 +26,7 @@ The package intentionally mirrors the parent frontend's Vite 5 and React Router 
 
 ## Component architecture
 
-```text
+```bash
 src/
 ├── pages/                         route-level composition only
 │   ├── tests/                     mock journey and exam routes
