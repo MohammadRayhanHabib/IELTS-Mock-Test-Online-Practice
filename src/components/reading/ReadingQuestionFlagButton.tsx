@@ -10,6 +10,9 @@ export interface ReadingQuestionFlagButtonProps {
 
 const ActiveReadingQuestionContext = createContext<number | null>(null);
 
+export const useActiveReadingQuestionNumber = (): number | null =>
+  useContext(ActiveReadingQuestionContext);
+
 export const ReadingQuestionFlagProvider: React.FC<{
   activeQuestionNumber: number;
   children: React.ReactNode;
@@ -25,7 +28,7 @@ const ReadingQuestionFlagButton: React.FC<ReadingQuestionFlagButtonProps> = ({
   onToggle,
   className = "",
 }) => {
-  const activeQuestionNumber = useContext(ActiveReadingQuestionContext);
+  const activeQuestionNumber = useActiveReadingQuestionNumber();
   if (
     activeQuestionNumber !== null &&
     activeQuestionNumber !== questionNumber
