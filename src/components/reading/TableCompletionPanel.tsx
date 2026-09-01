@@ -134,8 +134,8 @@ const TableCompletionPanel: React.FC<TableCompletionPanelProps> = ({
                               ) : null}
                               {endsWithLineBreak ? <br /> : null}
                               {partIndex < parts.length - 1 ? (
-                                <span className="mx-0.5 inline-flex items-center gap-1 align-middle">
-                                <span className="relative inline-flex h-[30px] w-full min-w-0 max-w-[190px] border border-gray-500 bg-white">
+                                <span className="my-1 inline-grid w-full min-w-0 max-w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-1 align-middle">
+                                <span className="relative inline-flex h-[30px] w-full min-w-0 max-w-full overflow-hidden border border-gray-500 bg-white">
                                   {!gapValue.trim() ? (
                                     <span className="pointer-events-none absolute inset-0 flex items-center justify-center font-bold tabular-nums text-gray-600">
                                       {questionNumber}
