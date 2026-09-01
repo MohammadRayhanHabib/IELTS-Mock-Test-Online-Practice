@@ -36,7 +36,7 @@ export const QUESTION_TYPE_LABELS: Record<ReadingQuestionType, string> = {
   [ReadingQuestionType.SUMMARY_COMPLETION]: "Summary Completion",
   [ReadingQuestionType.NOTE_COMPLETION]: "Note Completion",
   [ReadingQuestionType.MATCHING_HEADINGS]: "Matching Headings",
-  [ReadingQuestionType.MATCHING_INFORMATION]: "Statement Matching",
+  [ReadingQuestionType.MATCHING_INFORMATION]: "Information Matching",
   [ReadingQuestionType.MATCHING_FEATURES]: "Statement Matching",
   [ReadingQuestionType.LIST_MATCHING]: "List Matching",
   [ReadingQuestionType.CLASSIFICATION]: "Classification",

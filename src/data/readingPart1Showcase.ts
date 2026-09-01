@@ -144,7 +144,7 @@ export const READING_PART_1_SHOWCASE_QUESTIONS: IReadingQuestionStudent[] = [
     ],
   }),
   question(4, ReadingQuestionType.MATCHING_INFORMATION, {
-    groupLabel: "R-04 · Statement Matching",
+    groupLabel: "R-04 · Information Matching",
     instructions: "",
     questionText: "",
     options: [
