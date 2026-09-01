@@ -56,7 +56,7 @@ body {
 /* IELTS-style split-panel scrollbars used only by the Reading client preview. */
 .ielts-reading-scrollbar {
   scrollbar-width: auto;
-  scrollbar-color: #737373 #eeeeee;
+  scrollbar-color: #b8b8b8 #f4f4f4;
 }
 
 .ielts-reading-scrollbar::-webkit-scrollbar {
@@ -65,22 +65,26 @@ body {
 }
 
 .ielts-reading-scrollbar::-webkit-scrollbar-track {
-  background: #eeeeee;
+  border-left: 1px solid #dedede;
+  border-right: 1px solid #dedede;
+  background: #f4f4f4;
 }
 
 .ielts-reading-scrollbar::-webkit-scrollbar-thumb {
   min-height: 128px;
-  border: 0;
+  border: 2px solid #f4f4f4;
   border-radius: 0;
-  background: #737373;
+  background: #b8b8b8;
+  background-clip: padding-box;
 }
 
 .ielts-reading-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #5f5f5f;
+  background: #9f9f9f;
+  background-clip: padding-box;
 }
 
 .ielts-reading-scrollbar::-webkit-scrollbar-corner {
-  background: #eeeeee;
+  background: #f4f4f4;
 }
 
 /* Full-exam accessibility modes controlled from the IELTS-style Options screen. */
