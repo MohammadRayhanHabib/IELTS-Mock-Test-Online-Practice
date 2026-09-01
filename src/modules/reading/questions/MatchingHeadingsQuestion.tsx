@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { answerAsArray, type ReadingQuestionComponentProps } from "./types";
+import ReadingQuestionFlagButton from "../../../components/reading/ReadingQuestionFlagButton";
 
 export const HEADING_DRAG_MIME = "application/x-lexora-reading-heading";
 
@@ -43,9 +44,11 @@ export interface ReadingHeadingDropZoneProps {
   onSelectionConsumed: () => void;
   firstQuestionNumber: number;
   allowDragBack?: boolean;
+  flaggedQuestions?: ReadonlySet<number>;
+  onToggleFlag?: (questionNumber: number) => void;
 }
 
-export const ReadingHeadingDropZone: React.FC<ReadingHeadingDropZoneProps> = ({ slotIndex, slotCount, headings, answer, selectedLetter, onChange, onSelectionConsumed, firstQuestionNumber, allowDragBack = false }) => {
+export const ReadingHeadingDropZone: React.FC<ReadingHeadingDropZoneProps> = ({ slotIndex, slotCount, headings, answer, selectedLetter, onChange, onSelectionConsumed, firstQuestionNumber, allowDragBack = false, flaggedQuestions, onToggleFlag }) => {
   const values = Array.from({ length: slotCount }, (_, index) => answer[index] ?? "");
   const placed = values[slotIndex];
   const place = (letter: string) => {
@@ -57,20 +60,21 @@ export const ReadingHeadingDropZone: React.FC<ReadingHeadingDropZoneProps> = ({ 
     onSelectionConsumed();
   };
   return (
-    <div className="not-prose mb-1.5 select-none">
+    <div className="not-prose mb-1.5 flex items-center gap-1 select-none">
       <button type="button" draggable={allowDragBack && Boolean(placed)} onDragStart={(event) => { if (!placed) return; event.dataTransfer.setData(HEADING_DRAG_MIME, placed); }} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); place(event.dataTransfer.getData(HEADING_DRAG_MIME)); }} onClick={() => selectedLetter && place(selectedLetter)} className={`flex min-h-7 items-center gap-2 rounded-sm border transition-colors ${placed ? allowDragBack ? "w-fit min-w-80 max-w-full cursor-grab border-[#5b8def] bg-[#5b8def] px-5 py-1.5 text-base font-medium text-white" : "w-fit max-w-full border-sky-500 bg-white px-2 py-0.5 text-sm font-semibold text-gray-950" : "w-full justify-center border-dashed border-sky-300 bg-white px-2 py-0.5 text-sm font-bold text-gray-900 hover:border-sky-500 hover:bg-sky-50 hover:text-sky-950"}`}>{placed ? `${allowDragBack ? `${placed}. ` : ""}${headings[placed.charCodeAt(0) - 65] ?? placed}` : firstQuestionNumber + slotIndex}</button>
+      {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={firstQuestionNumber + slotIndex} flagged={flaggedQuestions.has(firstQuestionNumber + slotIndex)} onToggle={onToggleFlag} className="h-9 w-9" /> : null}
     </div>
   );
 };
 
-const MatchingHeadingsQuestion: React.FC<ReadingQuestionComponentProps> = ({ question, answer, onChange, firstQuestionNumber, visualVariant }) => {
+const MatchingHeadingsQuestion: React.FC<ReadingQuestionComponentProps> = ({ question, answer, onChange, firstQuestionNumber, visualVariant, flaggedQuestions, onToggleFlag }) => {
   const values = answerAsArray(answer, question.options?.length);
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
   return (
     <div className="space-y-5">
       <ReadingHeadingBank headings={question.wordBank ?? []} answer={values} selectedLetter={selectedLetter} onSelect={setSelectedLetter} onReturn={(letter) => { onChange(values.map((value) => value === letter ? "" : value)); setSelectedLetter(null); }} visualVariant={visualVariant === "client-preview" ? "reference" : "interactive"} />
       <div className="space-y-3">
-        {(question.options ?? []).map((slot, slotIndex) => <div key={`${slot}-${slotIndex}`} className="grid items-start gap-2 sm:grid-cols-[minmax(120px,0.35fr)_1fr]"><span className="pt-1 text-sm font-semibold text-gray-900">{slot}</span><ReadingHeadingDropZone slotIndex={slotIndex} slotCount={question.options?.length ?? 0} headings={question.wordBank ?? []} answer={values} selectedLetter={selectedLetter} onChange={onChange} onSelectionConsumed={() => setSelectedLetter(null)} firstQuestionNumber={firstQuestionNumber} allowDragBack={visualVariant === "client-preview"} /></div>)}
+        {(question.options ?? []).map((slot, slotIndex) => <div key={`${slot}-${slotIndex}`} className="grid items-start gap-2 sm:grid-cols-[minmax(120px,0.35fr)_1fr]"><span className="pt-1 text-sm font-semibold text-gray-900">{slot}</span><ReadingHeadingDropZone slotIndex={slotIndex} slotCount={question.options?.length ?? 0} headings={question.wordBank ?? []} answer={values} selectedLetter={selectedLetter} onChange={onChange} onSelectionConsumed={() => setSelectedLetter(null)} firstQuestionNumber={firstQuestionNumber} allowDragBack={visualVariant === "client-preview"} flaggedQuestions={flaggedQuestions} onToggleFlag={onToggleFlag} /></div>)}
       </div>
     </div>
   );

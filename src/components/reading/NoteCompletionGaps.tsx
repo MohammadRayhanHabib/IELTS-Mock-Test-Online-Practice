@@ -3,6 +3,7 @@ import {
   FLOWCHART_GAP_TOKEN,
   countNoteCompletionGaps,
 } from "../../api/reading";
+import ReadingQuestionFlagButton from "./ReadingQuestionFlagButton";
 
 export interface NoteCompletionGapsProps {
   lines: string[];
@@ -25,6 +26,8 @@ export interface NoteCompletionGapsProps {
     | "short-answer-official"
     | "official"
     | "sentence";
+  flaggedQuestions?: ReadonlySet<number>;
+  onToggleFlag?: (questionNumber: number) => void;
 }
 
 const NoteCompletionGaps: React.FC<NoteCompletionGapsProps> = ({
@@ -37,6 +40,8 @@ const NoteCompletionGaps: React.FC<NoteCompletionGapsProps> = ({
   emptyLinePlaceholder = "Note line…",
   lineTextClassName = "",
   appearance = "note",
+  flaggedQuestions,
+  onToggleFlag,
 }) => {
   const n = countNoteCompletionGaps(lines);
   const vals = Array.from({ length: Math.max(0, n) }, (_, i) =>
@@ -81,7 +86,8 @@ const NoteCompletionGaps: React.FC<NoteCompletionGapsProps> = ({
     const boxClass = variant === "suffix" ? gapBoxClassSuffix : gapBoxClassInline;
     const hasAnswer = vals[globalIdx].trim().length > 0;
     return (
-      <div key={`g-${globalIdx}`} className={boxClass}>
+      <span key={`g-${globalIdx}`} className="inline-flex items-center gap-1 align-middle">
+      <span className={boxClass}>
         {!hasAnswer && (
           <span className={qnClass} aria-hidden>
             {qn}
@@ -100,7 +106,9 @@ const NoteCompletionGaps: React.FC<NoteCompletionGapsProps> = ({
           placeholder=""
           autoComplete="off"
         />
-      </div>
+      </span>
+      {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={qn} flagged={flaggedQuestions.has(qn)} onToggle={onToggleFlag} className="h-9 w-9" /> : null}
+      </span>
     );
   };
 

@@ -5,6 +5,7 @@ import {
 } from "../../../api/reading";
 import type { ReadingQuestionComponentProps } from "./types";
 import { answerAsArray } from "./types";
+import ReadingQuestionFlagButton from "../../../components/reading/ReadingQuestionFlagButton";
 
 function gapsBeforeRow(rows: string[], rowIndex: number): number {
   let count = 0;
@@ -22,6 +23,8 @@ interface FlowchartCompletionQuestionProps {
   onChange: (next: string[]) => void;
   firstQuestionNumber: number;
   visualVariant?: "default" | "key-events-reference";
+  flaggedQuestions?: ReadonlySet<number>;
+  onToggleFlag?: (questionNumber: number) => void;
 }
 
 export const FlowchartCompletionPanel: React.FC<FlowchartCompletionQuestionProps> = ({
@@ -32,6 +35,8 @@ export const FlowchartCompletionPanel: React.FC<FlowchartCompletionQuestionProps
   onChange,
   firstQuestionNumber,
   visualVariant = "default",
+  flaggedQuestions,
+  onToggleFlag,
 }) => {
   const gapCount = countFlowchartGapTokens(rows);
   const values = Array.from({ length: gapCount }, (_, index) => String(answer[index] ?? ""));
@@ -58,9 +63,12 @@ export const FlowchartCompletionPanel: React.FC<FlowchartCompletionQuestionProps
                     <React.Fragment key={`${rowIndex}-${partIndex}`}>
                       {part ? <span className="whitespace-pre-wrap">{part}</span> : null}
                       {partIndex < parts.length - 1 ? (
-                        <span className="relative inline-flex h-[30px] w-[200px] shrink-0 items-stretch border border-gray-500 bg-white align-middle focus-within:border-2 focus-within:border-[#1683d8]">
+                        <span className="inline-flex items-center gap-1 align-middle">
+                        <span className="relative inline-flex h-[30px] w-[200px] shrink-0 items-stretch border border-gray-500 bg-white focus-within:border-2 focus-within:border-[#1683d8]">
                           {!value.trim() ? <span className="pointer-events-none absolute inset-0 flex items-center justify-center font-semibold tabular-nums text-gray-600">{questionNumber}</span> : null}
                           <input type="text" value={value} onChange={(event) => setValue(gapIndex, event.target.value)} aria-label={`Flowchart gap ${questionNumber}`} className="ielts-numbered-answer-input relative z-[1] h-full min-w-0 flex-1 bg-transparent px-2 text-center font-semibold text-gray-900 focus:outline-none" autoComplete="off" />
+                        </span>
+                        {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={questionNumber} flagged={flaggedQuestions.has(questionNumber)} onToggle={onToggleFlag} className="h-9 w-9" /> : null}
                         </span>
                       ) : null}
                     </React.Fragment>
@@ -92,9 +100,12 @@ export const FlowchartCompletionPanel: React.FC<FlowchartCompletionQuestionProps
                     <React.Fragment key={`${rowIndex}-${partIndex}`}>
                       {part ? <span className="whitespace-pre-wrap">{part}</span> : null}
                       {partIndex < parts.length - 1 ? (
-                        <span className="relative mx-1 inline-flex shrink-0 items-stretch align-baseline">
+                        <span className="mx-1 inline-flex shrink-0 items-center gap-1 align-baseline">
+                        <span className="relative inline-flex items-stretch">
                           {!value.trim() ? <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-sm font-bold tabular-nums text-rose-900">{questionNumber}</span> : null}
                           <input type="text" value={value} onChange={(event) => setValue(gapIndex, event.target.value)} aria-label={`Flowchart gap ${questionNumber}`} className="ielts-numbered-answer-input relative z-[1] min-h-10 w-[min(12rem,85vw)] min-w-[7rem] rounded-md border-2 border-dashed border-rose-300 bg-transparent px-2 py-1 text-center text-sm text-gray-900 outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-200" autoComplete="off" />
+                        </span>
+                        {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={questionNumber} flagged={flaggedQuestions.has(questionNumber)} onToggle={onToggleFlag} className="h-9 w-9" /> : null}
                         </span>
                       ) : null}
                     </React.Fragment>
@@ -117,8 +128,8 @@ export const FlowchartCompletionPanel: React.FC<FlowchartCompletionQuestionProps
   );
 };
 
-const FlowchartCompletionQuestion: React.FC<ReadingQuestionComponentProps> = ({ question, answer, onChange, firstQuestionNumber, visualVariant }) => (
-  <FlowchartCompletionPanel title={question.questionText} rows={question.options ?? []} hints={(question.wordBank ?? []).filter((hint) => hint.trim())} answer={answerAsArray(answer)} onChange={onChange} firstQuestionNumber={firstQuestionNumber} visualVariant={visualVariant === "client-preview" ? "key-events-reference" : "default"} />
+const FlowchartCompletionQuestion: React.FC<ReadingQuestionComponentProps> = ({ question, answer, onChange, firstQuestionNumber, visualVariant, flaggedQuestions, onToggleFlag }) => (
+  <FlowchartCompletionPanel title={question.questionText} rows={question.options ?? []} hints={(question.wordBank ?? []).filter((hint) => hint.trim())} answer={answerAsArray(answer)} onChange={onChange} firstQuestionNumber={firstQuestionNumber} visualVariant={visualVariant === "client-preview" ? "key-events-reference" : "default"} flaggedQuestions={flaggedQuestions} onToggleFlag={onToggleFlag} />
 );
 
 export default FlowchartCompletionQuestion;

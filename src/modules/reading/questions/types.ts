@@ -10,6 +10,8 @@ export interface ReadingQuestionComponentProps {
   firstQuestionNumber: number;
   textClassName?: string;
   visualVariant?: ReadingQuestionVisualVariant;
+  flaggedQuestions?: ReadonlySet<number>;
+  onToggleFlag?: (questionNumber: number) => void;
 }
 
 export const answerAsString = (answer: ReadingQuestionAnswer): string =>

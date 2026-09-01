@@ -5,6 +5,7 @@ import {
   countTableGapTokens,
   tableGapIndexBefore,
 } from "../../api/reading";
+import ReadingQuestionFlagButton from "./ReadingQuestionFlagButton";
 
 export interface TableCompletionPanelProps {
   title: string;
@@ -18,6 +19,8 @@ export interface TableCompletionPanelProps {
   centerTableHeaders?: boolean;
   /** Client-preview rendering that mirrors the official IELTS table layout. */
   visualVariant?: "default" | "change-blindness-reference";
+  flaggedQuestions?: ReadonlySet<number>;
+  onToggleFlag?: (questionNumber: number) => void;
 }
 
 const TableCompletionPanel: React.FC<TableCompletionPanelProps> = ({
@@ -29,6 +32,8 @@ const TableCompletionPanel: React.FC<TableCompletionPanelProps> = ({
   onChange,
   centerTableHeaders = false,
   visualVariant = "default",
+  flaggedQuestions,
+  onToggleFlag,
 }) => {
   const parsed = parseTableOptions(options);
   const gapCount = countTableGapTokens(options);
@@ -129,7 +134,8 @@ const TableCompletionPanel: React.FC<TableCompletionPanelProps> = ({
                               ) : null}
                               {endsWithLineBreak ? <br /> : null}
                               {partIndex < parts.length - 1 ? (
-                                <span className="relative mx-0.5 inline-flex h-[30px] w-full min-w-0 max-w-[190px] align-middle border border-gray-500 bg-white">
+                                <span className="mx-0.5 inline-flex items-center gap-1 align-middle">
+                                <span className="relative inline-flex h-[30px] w-full min-w-0 max-w-[190px] border border-gray-500 bg-white">
                                   {!gapValue.trim() ? (
                                     <span className="pointer-events-none absolute inset-0 flex items-center justify-center font-bold tabular-nums text-gray-600">
                                       {questionNumber}
@@ -146,6 +152,8 @@ const TableCompletionPanel: React.FC<TableCompletionPanelProps> = ({
                                     placeholder=""
                                     autoComplete="off"
                                   />
+                                </span>
+                                {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={questionNumber} flagged={flaggedQuestions.has(questionNumber)} onToggle={onToggleFlag} className="h-9 w-9" /> : null}
                                 </span>
                               ) : null}
                             </React.Fragment>
@@ -228,6 +236,7 @@ const TableCompletionPanel: React.FC<TableCompletionPanelProps> = ({
                                 </span>
                               ) : null}
                               {pi < parts.length - 1 ? (
+                                <span className="inline-flex min-w-0 max-w-full flex-1 items-center gap-1">
                                 <span className="relative inline-flex min-h-[2.25rem] min-w-0 max-w-full flex-1 items-stretch rounded-md border-2 border-dashed border-rose-300 bg-rose-50/70">
                                   {!gapValue.trim() ? (
                                     <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-sm font-bold tabular-nums text-gray-900">
@@ -245,6 +254,8 @@ const TableCompletionPanel: React.FC<TableCompletionPanelProps> = ({
                                     placeholder=""
                                     autoComplete="off"
                                   />
+                                </span>
+                                {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={questionNumber} flagged={flaggedQuestions.has(questionNumber)} onToggle={onToggleFlag} className="h-9 w-9" /> : null}
                                 </span>
                               ) : null}
                             </React.Fragment>

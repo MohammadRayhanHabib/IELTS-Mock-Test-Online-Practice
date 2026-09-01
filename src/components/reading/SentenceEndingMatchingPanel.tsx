@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import ReadingQuestionFlagButton from "./ReadingQuestionFlagButton";
 import { FiBookmark } from "react-icons/fi";
 
 const SENTENCE_ENDING_MIME = "application/x-lexora-sentence-ending";
@@ -14,6 +15,8 @@ export interface SentenceEndingMatchingPanelProps {
   firstQuestionNumber: number;
   readOnly?: boolean;
   visualVariant?: "default" | "reference";
+  flaggedQuestions?: ReadonlySet<number>;
+  onToggleFlag?: (questionNumber: number) => void;
   showBookmark?: boolean;
   bookmarked?: boolean;
   onToggleBookmark?: () => void;
@@ -30,6 +33,8 @@ const SentenceEndingMatchingPanel: React.FC<
   firstQuestionNumber,
   readOnly = false,
   visualVariant = "default",
+  flaggedQuestions,
+  onToggleFlag,
   showBookmark = false,
   bookmarked = false,
   onToggleBookmark,
@@ -235,6 +240,14 @@ const SentenceEndingMatchingPanel: React.FC<
                   </span>
                 )}
               </div>
+              {flaggedQuestions && onToggleFlag ? (
+                <ReadingQuestionFlagButton
+                  questionNumber={questionNumber}
+                  flagged={flaggedQuestions.has(questionNumber)}
+                  onToggle={onToggleFlag}
+                  className="-my-1"
+                />
+              ) : null}
             </div>
           );
         })}

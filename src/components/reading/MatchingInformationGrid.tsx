@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { FiBookmark } from "react-icons/fi";
+import ReadingQuestionFlagButton from "./ReadingQuestionFlagButton";
 
 const DEFAULT_COLUMN_COUNT = 7;
 
@@ -23,6 +24,8 @@ export interface MatchingInformationGridProps {
   showBookmark?: boolean;
   bookmarked?: boolean;
   onToggleBookmark?: () => void;
+  flaggedQuestions?: ReadonlySet<number>;
+  onToggleFlag?: (questionNumber: number) => void;
 }
 
 function normalizeColumns(labels: string[]): string[] {
@@ -53,6 +56,8 @@ const MatchingInformationGrid: React.FC<MatchingInformationGridProps> = ({
   showBookmark = false,
   bookmarked = false,
   onToggleBookmark,
+  flaggedQuestions,
+  onToggleFlag,
 }) => {
   const referenceVariant = visualVariant !== "default";
   const featuresVariant = visualVariant === "features";
@@ -159,14 +164,26 @@ const MatchingInformationGrid: React.FC<MatchingInformationGridProps> = ({
                       : "sticky left-0 z-[1] max-w-[28rem] border-r border-gray-200 bg-white px-3 py-2.5 align-top leading-snug"
                   }
                 >
-                  <span className="font-semibold tabular-nums text-gray-900">
-                    {qn}.
-                  </span>{" "}
-                  <span className="text-gray-800">
-                    {stmt.trim() || (
-                      <span className="text-gray-400 italic">Statement…</span>
-                    )}
-                  </span>
+                  <div className="flex items-start gap-2">
+                    <div className="min-w-0 flex-1">
+                      <span className="font-semibold tabular-nums text-gray-900">
+                        {qn}.
+                      </span>{" "}
+                      <span className="text-gray-800">
+                        {stmt.trim() || (
+                          <span className="text-gray-400 italic">Statement…</span>
+                        )}
+                      </span>
+                    </div>
+                    {flaggedQuestions && onToggleFlag ? (
+                      <ReadingQuestionFlagButton
+                        questionNumber={qn}
+                        flagged={flaggedQuestions.has(qn)}
+                        onToggle={onToggleFlag}
+                        className="-my-2 -mr-1"
+                      />
+                    ) : null}
+                  </div>
                 </td>
                 {columns.map((col) => (
                   <td

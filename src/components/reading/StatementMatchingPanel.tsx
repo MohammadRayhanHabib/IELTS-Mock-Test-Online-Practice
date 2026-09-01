@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import ReadingQuestionFlagButton from "./ReadingQuestionFlagButton";
 
 const STATEMENT_MATCH_LETTER_MIME = "application/x-lexora-matching-letter";
 
@@ -36,6 +37,8 @@ export interface StatementMatchingPanelProps {
   onChange: (next: string[]) => void;
   firstQuestionNumber: number;
   readOnly?: boolean;
+  flaggedQuestions?: ReadonlySet<number>;
+  onToggleFlag?: (questionNumber: number) => void;
 }
 
 const StatementMatchingPanel: React.FC<StatementMatchingPanelProps> = ({
@@ -46,6 +49,8 @@ const StatementMatchingPanel: React.FC<StatementMatchingPanelProps> = ({
   onChange,
   firstQuestionNumber,
   readOnly = false,
+  flaggedQuestions,
+  onToggleFlag,
 }) => {
   const choices = useMemo(() => parseStatementMatchChoices(wordBank), [wordBank]);
   const letters = useMemo(
@@ -178,6 +183,14 @@ const StatementMatchingPanel: React.FC<StatementMatchingPanelProps> = ({
                   </div>
                 )}
               </div>
+              {flaggedQuestions && onToggleFlag ? (
+                <ReadingQuestionFlagButton
+                  questionNumber={qn}
+                  flagged={flaggedQuestions.has(qn)}
+                  onToggle={onToggleFlag}
+                  className="-my-1"
+                />
+              ) : null}
             </li>
           );
         })}

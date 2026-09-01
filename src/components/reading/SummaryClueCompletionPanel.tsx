@@ -3,6 +3,7 @@ import {
   FLOWCHART_GAP_TOKEN,
   countNoteCompletionGaps,
 } from "../../api/reading";
+import ReadingQuestionFlagButton from "./ReadingQuestionFlagButton";
 
 const SUMMARY_CLUE_MIME = "application/x-lexora-summary-clue";
 const SUMMARY_CLUE_SOURCE_MIME = "application/x-lexora-summary-clue-source";
@@ -16,6 +17,8 @@ export interface SummaryClueCompletionPanelProps {
   onChange: (next: string[]) => void;
   firstQuestionNumber: number;
   readOnly?: boolean;
+  flaggedQuestions?: ReadonlySet<number>;
+  onToggleFlag?: (questionNumber: number) => void;
 }
 
 const SummaryClueCompletionPanel: React.FC<
@@ -29,6 +32,8 @@ const SummaryClueCompletionPanel: React.FC<
   onChange,
   firstQuestionNumber,
   readOnly = false,
+  flaggedQuestions,
+  onToggleFlag,
 }) => {
   const gapCount = countNoteCompletionGaps(lines);
   const letters = useMemo(
@@ -71,8 +76,8 @@ const SummaryClueCompletionPanel: React.FC<
     const isOver = overSlot === slotIndex;
 
     return (
+      <span key={`${questionId}-gap-${slotIndex}-wrap`} className="mx-1 inline-flex items-center gap-1 align-middle">
       <span
-        key={`${questionId}-gap-${slotIndex}`}
         role={readOnly ? undefined : "button"}
         tabIndex={readOnly ? undefined : 0}
         draggable={!readOnly && Boolean(placedLetter)}
@@ -116,7 +121,7 @@ const SummaryClueCompletionPanel: React.FC<
           if (selectedLetter) placeClue(slotIndex, selectedLetter);
           else if (placedLetter && !readOnly) setSelectedLetter(placedLetter);
         }}
-        className={`mx-1 inline-flex min-h-[35px] align-middle transition-colors ${
+        className={`inline-flex min-h-[35px] align-middle transition-colors ${
           placedLetter
             ? "w-fit max-w-full cursor-grab items-center border border-gray-600 bg-white px-4 py-1 active:cursor-grabbing"
             : "w-36 items-center justify-center border border-dashed border-gray-600 bg-white px-3 py-1"
@@ -134,6 +139,8 @@ const SummaryClueCompletionPanel: React.FC<
             {questionNumber}
           </span>
         )}
+      </span>
+      {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={questionNumber} flagged={flaggedQuestions.has(questionNumber)} onToggle={onToggleFlag} className="h-9 w-9" /> : null}
       </span>
     );
   };

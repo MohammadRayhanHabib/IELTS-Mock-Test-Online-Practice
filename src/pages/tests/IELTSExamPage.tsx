@@ -1689,6 +1689,20 @@ const ReadingSection: React.FC<{
       ? countNoteCompletionGaps(currentQ.options ?? [])
       : 0;
 
+  const inlineReadingFlagUi =
+    showcaseChoiceGroupUi ||
+    clientPreviewHeadingMatchingUi ||
+    clientPreviewMatchingFeaturesUi ||
+    clientPreviewInformationMatchingUi ||
+    clientPreviewListSelectUi ||
+    clientPreviewSentenceEndingUi ||
+    clientPreviewClassificationUi ||
+    clientPreviewSummaryWithCluesUi ||
+    noteCompletionGapCount > 0 ||
+    flowchartGapUi ||
+    tableGapUi ||
+    diagramGapUi;
+
   const statementOrListMatchingStemUi =
     currentQ != null &&
     (currentQ.questionType === ReadingQuestionType.MATCHING_FEATURES ||
@@ -1911,6 +1925,8 @@ const ReadingSection: React.FC<{
                             : activePart.offset + matchingHeadingLocalIndex + 1
                         }
                         allowDragBack={clientPreviewHeadingMatchingUi}
+                        flaggedQuestions={flaggedQuestions}
+                        onToggleFlag={onToggleFlag}
                       />
                     )}
                   <div
@@ -1994,7 +2010,7 @@ const ReadingSection: React.FC<{
             isClientShowcase ? "ielts-reading-scrollbar" : ""
           }`}
         >
-          {currentQ ? (
+          {currentQ && !inlineReadingFlagUi ? (
             <div className="absolute right-6 top-5 z-10 lg:right-8">
               <ReadingQuestionBookmarkButton
                 questionNumber={activeQNum}
@@ -2413,6 +2429,8 @@ const ReadingSection: React.FC<{
                   firstQuestionNumber={groupStart}
                   textClassName={questionFontClass}
                   visualVariant={isClientShowcase ? "client-preview" : "default"}
+                  flaggedQuestions={flaggedQuestions}
+                  onToggleFlag={onToggleFlag}
                 />
               ) : null}
               {/* Clear */}

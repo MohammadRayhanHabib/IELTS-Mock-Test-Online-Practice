@@ -4,9 +4,9 @@ import NoteCompletionGaps from "../../../components/reading/NoteCompletionGaps";
 import TextAnswerQuestion from "./TextAnswerQuestion";
 import { answerAsArray, answerAsString, type ReadingQuestionComponentProps } from "./types";
 
-const ShortAnswerQuestion: React.FC<ReadingQuestionComponentProps> = ({ question, answer, onChange, firstQuestionNumber, textClassName, visualVariant }) =>
+const ShortAnswerQuestion: React.FC<ReadingQuestionComponentProps> = ({ question, answer, onChange, firstQuestionNumber, textClassName, visualVariant, flaggedQuestions, onToggleFlag }) =>
   countNoteCompletionGaps(question.options) > 0 ? (
-    <NoteCompletionGaps lines={question.options ?? []} answer={answerAsArray(answer)} onChange={onChange} firstQuestionNumber={firstQuestionNumber} lineTextClassName={`${textClassName ?? "text-base"} text-gray-800`} showBullet={false} appearance={visualVariant === "client-preview" ? "short-answer-official" : "note"} />
+    <NoteCompletionGaps lines={question.options ?? []} answer={answerAsArray(answer)} onChange={onChange} firstQuestionNumber={firstQuestionNumber} lineTextClassName={`${textClassName ?? "text-base"} text-gray-800`} showBullet={false} appearance={visualVariant === "client-preview" ? "short-answer-official" : "note"} flaggedQuestions={flaggedQuestions} onToggleFlag={onToggleFlag} />
   ) : (
     <TextAnswerQuestion value={answerAsString(answer)} onChange={onChange} textClassName={textClassName} />
   );

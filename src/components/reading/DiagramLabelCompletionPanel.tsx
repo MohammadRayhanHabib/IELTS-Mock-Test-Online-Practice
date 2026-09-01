@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ReadingQuestionFlagButton from "./ReadingQuestionFlagButton";
 
 const DIAGRAM_LABEL_WORD_MIME = "application/x-lexora-diagram-label";
 
@@ -15,6 +16,8 @@ export interface DiagramLabelCompletionPanelProps {
   readOnly?: boolean;
   /** Client-preview rendering that mirrors the official IELTS diagram layout. */
   visualVariant?: "default" | "building-structure-reference";
+  flaggedQuestions?: ReadonlySet<number>;
+  onToggleFlag?: (questionNumber: number) => void;
 }
 
 const DiagramLabelCompletionPanel: React.FC<
@@ -29,6 +32,8 @@ const DiagramLabelCompletionPanel: React.FC<
   firstQuestionNumber,
   readOnly = false,
   visualVariant = "default",
+  flaggedQuestions,
+  onToggleFlag,
 }) => {
   const gapCount = Math.max(gapHints.length, answer.length);
   const [overSlot, setOverSlot] = useState<number | null>(null);
@@ -194,10 +199,8 @@ const DiagramLabelCompletionPanel: React.FC<
             const qn = firstQuestionNumber + index;
             const value = values[index] ?? "";
             return (
-              <label
-                key={qn}
-                className="relative block h-[31px] border border-gray-500 bg-white"
-              >
+              <div key={qn} className="flex items-center gap-1">
+              <label className="relative block h-[31px] min-w-0 flex-1 border border-gray-500 bg-white">
                 {!value.trim() ? (
                   <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-sm font-semibold tabular-nums text-gray-600">
                     {qn}
@@ -213,6 +216,8 @@ const DiagramLabelCompletionPanel: React.FC<
                   className="ielts-numbered-answer-input relative z-[1] h-full w-full bg-transparent px-2 text-center text-sm font-semibold text-gray-900 focus:outline-none"
                 />
               </label>
+              {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={qn} flagged={flaggedQuestions.has(qn)} onToggle={onToggleFlag} className="h-9 w-9" /> : null}
+              </div>
             );
           })}
         </div>
@@ -331,6 +336,7 @@ const DiagramLabelCompletionPanel: React.FC<
                   </div>
                 )}
               </div>
+              {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={qn} flagged={flaggedQuestions.has(qn)} onToggle={onToggleFlag} className="-my-1" /> : null}
             </div>
           );
         })}

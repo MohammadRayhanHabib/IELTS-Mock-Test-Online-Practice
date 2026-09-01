@@ -5,9 +5,9 @@ import { answerAsArray, answerAsString, type ReadingQuestionComponentProps } fro
 
 const OPTIONS = ["YES", "NO", "NOT GIVEN"] as const;
 
-const YesNoNotGivenQuestion: React.FC<ReadingQuestionComponentProps> = ({ question, answer, onChange, firstQuestionNumber, textClassName, visualVariant }) =>
+const YesNoNotGivenQuestion: React.FC<ReadingQuestionComponentProps> = ({ question, answer, onChange, firstQuestionNumber, textClassName, visualVariant, flaggedQuestions, onToggleFlag }) =>
   visualVariant === "client-preview" || Array.isArray(answer) ? (
-    <QuestionChoiceGroup questionId={question._id} rows={question.options ?? []} choices={OPTIONS} answer={answerAsArray(answer, question.options?.length)} onChange={onChange} firstQuestionNumber={firstQuestionNumber} textClassName={textClassName} visualVariant={visualVariant === "client-preview" ? "statement-reference" : "default"} />
+    <QuestionChoiceGroup questionId={question._id} rows={question.options ?? []} choices={OPTIONS} answer={answerAsArray(answer, question.options?.length)} onChange={onChange} firstQuestionNumber={firstQuestionNumber} textClassName={textClassName} visualVariant={visualVariant === "client-preview" ? "statement-reference" : "default"} flaggedQuestions={flaggedQuestions} onToggleFlag={onToggleFlag} />
   ) : (
     <StatementAgreementQuestion options={OPTIONS} answer={answerAsString(answer)} onChange={onChange} textClassName={textClassName} />
   );

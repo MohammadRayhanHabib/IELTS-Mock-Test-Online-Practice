@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { parseStatementMatchChoices } from "./StatementMatchingPanel";
+import ReadingQuestionFlagButton from "./ReadingQuestionFlagButton";
 
 const LIST_MATCH_LETTER_MIME = "application/x-lexora-matching-letter";
 const LIST_MATCH_SOURCE_MIME = "application/x-lexora-matching-source";
@@ -21,6 +22,8 @@ export interface ListMatchingPanelProps {
     | "classification"
     | "classification-reference"
     | "two-letter";
+  flaggedQuestions?: ReadonlySet<number>;
+  onToggleFlag?: (questionNumber: number) => void;
 }
 
 const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
@@ -33,6 +36,8 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
   firstQuestionNumber,
   readOnly = false,
   visualVariant = "list",
+  flaggedQuestions,
+  onToggleFlag,
 }) => {
   const choices = useMemo(() => parseStatementMatchChoices(wordBank), [wordBank]);
   const letters = useMemo(() => choices.map((c) => c.letter), [choices]);
@@ -168,8 +173,15 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
         </p>
 
         <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-4">
-          <div className="flex h-[58px] items-center justify-center rounded-[3px] border-2 border-[#4288bc] bg-white px-2 text-lg font-black tabular-nums text-gray-900">
-            {firstQuestionNumber} - {firstQuestionNumber + 1}
+          <div className="flex min-h-[58px] items-center justify-center gap-1 rounded-[3px] border-2 border-[#4288bc] bg-white px-2 text-lg font-black tabular-nums text-gray-900">
+            <span>{firstQuestionNumber} - {firstQuestionNumber + 1}</span>
+            {flaggedQuestions && onToggleFlag ? (
+              <span className="flex">
+                {[firstQuestionNumber, firstQuestionNumber + 1].map((questionNumber) => (
+                  <ReadingQuestionFlagButton key={questionNumber} questionNumber={questionNumber} flagged={flaggedQuestions.has(questionNumber)} onToggle={onToggleFlag} className="h-9 w-9" />
+                ))}
+              </span>
+            ) : null}
           </div>
           <h3 className="text-lg font-black leading-snug text-gray-950">
             {bankTitle}
@@ -289,6 +301,7 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
                   </span>
                 </div>
                 <span className="leading-relaxed">{purpose}</span>
+                {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={questionNumber} flagged={flaggedQuestions.has(questionNumber)} onToggle={onToggleFlag} className="-my-1" /> : null}
               </li>
             );
           })}
@@ -389,7 +402,7 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
             return (
               <li
                 key={i}
-                className="grid grid-cols-[minmax(0,1fr)_minmax(5.5rem,7.5rem)] items-end gap-x-5 text-base text-gray-950"
+                className="grid grid-cols-[minmax(0,1fr)_minmax(5.5rem,7.5rem)_2.5rem] items-end gap-x-3 text-base text-gray-950"
               >
                 <p className="min-w-0 leading-relaxed">
                   <strong className="mr-1.5 font-bold">{qn}.</strong>
@@ -440,6 +453,7 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
                     />
                   )}
                 </div>
+                {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={qn} flagged={flaggedQuestions.has(qn)} onToggle={onToggleFlag} className="-my-1" /> : null}
               </li>
             );
           })}
@@ -573,6 +587,7 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
                   </span>
                 )}
               </span>
+              {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={qn} flagged={flaggedQuestions.has(qn)} onToggle={onToggleFlag} className="order-3 -my-1" /> : null}
             </li>
           );
         })}
