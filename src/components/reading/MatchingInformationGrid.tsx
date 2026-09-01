@@ -190,7 +190,12 @@ const MatchingInformationGrid: React.FC<MatchingInformationGridProps> = ({
                           if (!readOnly) setRow(ri, col);
                         }}
                         onClick={() => {
-                          if (!readOnly) setRow(ri, col);
+                          if (
+                            !readOnly &&
+                            rowSelectedValue(rowVals[ri], col)
+                          ) {
+                            setRow(ri, "");
+                          }
                         }}
                         disabled={readOnly}
                         className={`text-primary-600 border-gray-400 focus:ring-primary-500 disabled:opacity-60 ${
