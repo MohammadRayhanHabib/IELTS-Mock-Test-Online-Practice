@@ -173,19 +173,21 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
         </p>
 
         <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-4">
-          <div className="flex min-h-[58px] items-center justify-center gap-1 rounded-[3px] border-2 border-[#4288bc] bg-white px-2 text-lg font-black tabular-nums text-gray-900">
+          <div className="flex min-h-[58px] items-center justify-center rounded-[3px] border-2 border-[#4288bc] bg-white px-2 text-lg font-black tabular-nums text-gray-900">
             <span>{firstQuestionNumber} - {firstQuestionNumber + 1}</span>
+          </div>
+          <div className="flex min-w-0 items-center gap-3">
+            <h3 className="min-w-0 flex-1 text-lg font-black leading-snug text-gray-950">
+              {bankTitle}
+            </h3>
             {flaggedQuestions && onToggleFlag ? (
-              <span className="flex">
+              <span className="flex shrink-0">
                 {[firstQuestionNumber, firstQuestionNumber + 1].map((questionNumber) => (
                   <ReadingQuestionFlagButton key={questionNumber} questionNumber={questionNumber} flagged={flaggedQuestions.has(questionNumber)} onToggle={onToggleFlag} className="h-9 w-9" />
                 ))}
               </span>
             ) : null}
           </div>
-          <h3 className="text-lg font-black leading-snug text-gray-950">
-            {bankTitle}
-          </h3>
         </div>
 
         <div className="space-y-3 pl-3">
