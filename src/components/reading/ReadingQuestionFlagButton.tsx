@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext, useContext } from "react";
 import { FiBookmark } from "react-icons/fi";
 
 export interface ReadingQuestionFlagButtonProps {
@@ -8,13 +8,33 @@ export interface ReadingQuestionFlagButtonProps {
   className?: string;
 }
 
+const ActiveReadingQuestionContext = createContext<number | null>(null);
+
+export const ReadingQuestionFlagProvider: React.FC<{
+  activeQuestionNumber: number;
+  children: React.ReactNode;
+}> = ({ activeQuestionNumber, children }) => (
+  <ActiveReadingQuestionContext.Provider value={activeQuestionNumber}>
+    {children}
+  </ActiveReadingQuestionContext.Provider>
+);
+
 const ReadingQuestionFlagButton: React.FC<ReadingQuestionFlagButtonProps> = ({
   questionNumber,
   flagged,
   onToggle,
   className = "",
-}) => (
-  <button
+}) => {
+  const activeQuestionNumber = useContext(ActiveReadingQuestionContext);
+  if (
+    activeQuestionNumber !== null &&
+    activeQuestionNumber !== questionNumber
+  ) {
+    return null;
+  }
+
+  return (
+    <button
     type="button"
     onClick={() => onToggle(questionNumber)}
     aria-label={`${flagged ? "Remove flag from" : "Flag"} question ${questionNumber}`}
@@ -30,7 +50,8 @@ const ReadingQuestionFlagButton: React.FC<ReadingQuestionFlagButtonProps> = ({
       aria-hidden="true"
       className={`h-5 w-5 ${flagged ? "fill-current" : "fill-none"}`}
     />
-  </button>
-);
+    </button>
+  );
+};
 
 export default ReadingQuestionFlagButton;

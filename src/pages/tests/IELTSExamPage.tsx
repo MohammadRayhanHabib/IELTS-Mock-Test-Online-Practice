@@ -45,6 +45,7 @@ import {
   useReadingTextAnnotations,
   type ReadingAnnotation,
 } from "../../modules/reading/annotations";
+import { ReadingQuestionFlagProvider } from "../../components/reading/ReadingQuestionFlagButton";
 import {
   writingApi,
   IWritingModule,
@@ -949,6 +950,7 @@ const IELTSExamPage: React.FC<IELTSExamPageProps> = ({ showcase = false }) => {
   // ── Common exam shell ──────────────────────────────────────
 
   return (
+    <ReadingQuestionFlagProvider activeQuestionNumber={activeQNum}>
     <div
       translate="no"
       data-gramm="false"
@@ -1136,6 +1138,7 @@ const IELTSExamPage: React.FC<IELTSExamPageProps> = ({ showcase = false }) => {
                 fontSize={fontSize}
                 flaggedQuestions={flaggedReadingQuestions}
                 onToggleFlag={toggleReadingFlag}
+                onSelectQuestion={setActiveQNum}
                 annotations={readingAnnotations}
                 onAddAnnotation={(annotation) => {
                   setReadingAnnotations((previous) => [
@@ -1199,6 +1202,7 @@ const IELTSExamPage: React.FC<IELTSExamPageProps> = ({ showcase = false }) => {
         )}
       </div>
     </div>
+    </ReadingQuestionFlagProvider>
   );
 };
 
@@ -1472,6 +1476,7 @@ const ReadingSection: React.FC<{
   fontSize: ExamTextSize;
   flaggedQuestions: Set<number>;
   onToggleFlag: (questionNumber: number) => void;
+  onSelectQuestion: (questionNumber: number) => void;
   annotations: ReadingAnnotation[];
   onAddAnnotation: (annotation: ReadingAnnotation) => void;
   onOpenNotes: (annotationId?: string) => void;
@@ -1489,6 +1494,7 @@ const ReadingSection: React.FC<{
   fontSize,
   flaggedQuestions,
   onToggleFlag,
+  onSelectQuestion,
   annotations,
   onAddAnnotation,
   onOpenNotes,
@@ -2431,6 +2437,7 @@ const ReadingSection: React.FC<{
                   visualVariant={isClientShowcase ? "client-preview" : "default"}
                   flaggedQuestions={flaggedQuestions}
                   onToggleFlag={onToggleFlag}
+                  onSelectQuestion={onSelectQuestion}
                 />
               ) : null}
               {/* Clear */}

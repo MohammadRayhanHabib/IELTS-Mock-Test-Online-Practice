@@ -12,6 +12,7 @@ export interface ReadingQuestionComponentProps {
   visualVariant?: ReadingQuestionVisualVariant;
   flaggedQuestions?: ReadonlySet<number>;
   onToggleFlag?: (questionNumber: number) => void;
+  onSelectQuestion?: (questionNumber: number) => void;
 }
 
 export const answerAsString = (answer: ReadingQuestionAnswer): string =>
