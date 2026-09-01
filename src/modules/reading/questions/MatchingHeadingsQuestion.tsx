@@ -7,7 +7,7 @@ export interface ReadingHeadingBankProps {
   headings: string[];
   answer: string[];
   selectedLetter: string | null;
-  onSelect: (letter: string) => void;
+  onSelect: (letter: string | null) => void;
   onReturn?: (letter: string) => void;
   visualVariant?: "interactive" | "reference";
 }
@@ -25,7 +25,7 @@ export const ReadingHeadingBank: React.FC<ReadingHeadingBankProps> = ({ headings
           const letter = String.fromCharCode(65 + index);
           if (usedLetters.has(letter)) return null;
           return (
-            <button key={`${letter}-${heading}`} type="button" draggable onDragStart={(event) => { event.dataTransfer.setData(HEADING_DRAG_MIME, letter); event.dataTransfer.effectAllowed = "copy"; setDraggingLetter(letter); onSelect(letter); }} onDragEnd={() => setDraggingLetter(null)} onClick={() => onSelect(letter)} className={`flex w-fit max-w-full items-start border text-left leading-snug transition-all ${reference ? "min-h-8 rounded-none border-gray-500 px-5 py-1.5 text-base font-normal" : "rounded-sm px-2 py-1 text-sm font-semibold"} ${draggingLetter === letter ? "opacity-0" : ""} ${selectedLetter === letter ? "border-sky-600 bg-sky-50 text-sky-950 shadow-sm" : "cursor-grab border-gray-300 bg-white text-gray-900 hover:border-gray-500 hover:shadow-sm active:cursor-grabbing"}`}>{reference ? <span className="mr-1.5">{letter}.</span> : null}{heading}</button>
+            <button key={`${letter}-${heading}`} type="button" draggable onDragStart={(event) => { event.dataTransfer.setData(HEADING_DRAG_MIME, letter); event.dataTransfer.effectAllowed = "copy"; setDraggingLetter(letter); onSelect(letter); }} onDragEnd={() => setDraggingLetter(null)} onClick={() => onSelect(selectedLetter === letter ? null : letter)} className={`flex w-fit max-w-full items-start border text-left leading-snug transition-all ${reference ? "min-h-8 rounded-none border-gray-500 px-5 py-1.5 text-base font-normal" : "rounded-sm px-2 py-1 text-sm font-semibold"} ${draggingLetter === letter ? "opacity-0" : ""} ${selectedLetter === letter ? "border-sky-600 bg-sky-50 text-sky-950 shadow-sm" : "cursor-grab border-gray-300 bg-white text-gray-900 hover:border-gray-500 hover:shadow-sm active:cursor-grabbing"}`}>{reference ? <span className="mr-1.5">{letter}.</span> : null}{heading}</button>
           );
         })}
       </div>
