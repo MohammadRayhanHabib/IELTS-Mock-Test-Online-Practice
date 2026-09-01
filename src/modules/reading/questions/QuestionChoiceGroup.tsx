@@ -38,7 +38,7 @@ const QuestionChoiceGroup: React.FC<QuestionChoiceGroupProps> = ({
               <div className="mt-5 space-y-5 pl-12">
                 {fixedChoices.map((choice) => (
                   <label key={`${questionId}-${rowIndex}-${choice}`} className={`flex w-fit cursor-pointer items-center gap-4 leading-none text-gray-950 ${textClassName}`}>
-                    <input type="radio" name={`${questionId}-${rowIndex}`} checked={normalizedAnswers[rowIndex] === choice} onChange={() => { const next = [...normalizedAnswers]; next[rowIndex] = choice; onChange(next); }} className="h-4 w-4 shrink-0 accent-gray-900" />
+                    <input type="radio" name={`${questionId}-${rowIndex}`} checked={normalizedAnswers[rowIndex] === choice} onChange={() => { const next = [...normalizedAnswers]; next[rowIndex] = choice; onChange(next); }} className="h-4 w-4 shrink-0 accent-[#1683d8]" />
                     <span>{choice}</span>
                   </label>
                 ))}
