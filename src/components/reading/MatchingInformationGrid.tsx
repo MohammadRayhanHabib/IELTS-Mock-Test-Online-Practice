@@ -142,14 +142,6 @@ const MatchingInformationGrid: React.FC<MatchingInformationGridProps> = ({
                 {col}
               </th>
             ))}
-            {flaggedQuestions && onToggleFlag ? (
-              <th
-                scope="col"
-                className="w-12 min-w-12 px-1 py-2 text-center"
-              >
-                <span className="sr-only">Review flag</span>
-              </th>
-            ) : null}
           </tr>
         </thead>
         <tbody>
@@ -176,14 +168,26 @@ const MatchingInformationGrid: React.FC<MatchingInformationGridProps> = ({
                       : "sticky left-0 z-[1] max-w-[28rem] border-r border-gray-200 bg-white px-3 py-2.5 align-top leading-snug"
                   }
                 >
-                  <span className="font-semibold tabular-nums text-gray-900">
-                    {qn}.
-                  </span>{" "}
-                  <span className="text-gray-800">
-                    {stmt.trim() || (
-                      <span className="text-gray-400 italic">Statement…</span>
-                    )}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="min-w-0 flex-1">
+                      <span className="font-semibold tabular-nums text-gray-900">
+                        {qn}.
+                      </span>{" "}
+                      <span className="text-gray-800">
+                        {stmt.trim() || (
+                          <span className="text-gray-400 italic">Statement…</span>
+                        )}
+                      </span>
+                    </span>
+                    {flaggedQuestions && onToggleFlag ? (
+                      <ReadingQuestionFlagButton
+                        questionNumber={qn}
+                        flagged={flaggedQuestions.has(qn)}
+                        onToggle={onToggleFlag}
+                        className="-my-2 shrink-0"
+                      />
+                    ) : null}
+                  </div>
                 </td>
                 {columns.map((col) => (
                   <td
@@ -223,16 +227,6 @@ const MatchingInformationGrid: React.FC<MatchingInformationGridProps> = ({
                     </label>
                   </td>
                 ))}
-                {flaggedQuestions && onToggleFlag ? (
-                  <td className="w-12 min-w-12 px-1 text-center align-middle">
-                    <ReadingQuestionFlagButton
-                      questionNumber={qn}
-                      flagged={flaggedQuestions.has(qn)}
-                      onToggle={onToggleFlag}
-                      className="mx-auto"
-                    />
-                  </td>
-                ) : null}
               </tr>
             );
           })}
