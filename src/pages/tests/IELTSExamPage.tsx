@@ -212,6 +212,16 @@ const IELTSExamPage: React.FC<IELTSExamPageProps> = ({ showcase = false }) => {
     return () => document.removeEventListener("keydown", closeOnEscape);
   }, [optionsView]);
 
+  useEffect(() => {
+    if (!showNotes || !activeReadingNoteId) return;
+    const frame = window.requestAnimationFrame(() => {
+      const input = document.getElementById(`reading-note-${activeReadingNoteId}`) as HTMLTextAreaElement | null;
+      input?.scrollIntoView({ block: "center" });
+      input?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [activeReadingNoteId, showNotes]);
+
   // ── Load exam + start attempt ──────────────────────────────
   const initExam = useCallback(async () => {
     if (showcase) {
@@ -1140,9 +1150,13 @@ const IELTSExamPage: React.FC<IELTSExamPageProps> = ({ showcase = false }) => {
                     setActiveReadingNoteId(annotation.id);
                   }
                 }}
-                onOpenNotes={() => {
+                onOpenNotes={(annotationId) => {
                   setShowSettings(false);
                   setOptionsView(null);
+                  if (annotationId) {
+                    setDeletingReadingNoteId(null);
+                    setActiveReadingNoteId(annotationId);
+                  }
                   setShowNotes(true);
                 }}
                 onPreviousQuestion={() => setActiveQNum(Math.max(1, activeQNum - 1))}
@@ -1460,7 +1474,7 @@ const ReadingSection: React.FC<{
   onToggleFlag: (questionNumber: number) => void;
   annotations: ReadingAnnotation[];
   onAddAnnotation: (annotation: ReadingAnnotation) => void;
-  onOpenNotes: () => void;
+  onOpenNotes: (annotationId?: string) => void;
   onPreviousQuestion?: () => void;
   onNextQuestion?: () => void;
   canGoPrevious?: boolean;
@@ -1736,6 +1750,7 @@ const ReadingSection: React.FC<{
     toolbarRef: selectionToolbarRef,
     captureSelection: captureExamSelection,
     saveSelection: savePassageSelection,
+    openNoteAtPoint,
   } = useReadingTextAnnotations({
     containerRef: splitContainerRef,
     passageRef: passageContentRef,
@@ -1745,6 +1760,7 @@ const ReadingSection: React.FC<{
     annotations,
     passageRenderKey: matchingHeadingSlots.length,
     onCreate: onAddAnnotation,
+    onOpenNote: onOpenNotes,
   });
   useEffect(() => {
     if (!isResizing) return;
@@ -1785,6 +1801,7 @@ const ReadingSection: React.FC<{
     <div
       ref={splitContainerRef}
       onMouseUp={captureExamSelection}
+      onClick={openNoteAtPoint}
       className="flex h-full flex-col overflow-hidden bg-white"
     >
       <div className="shrink-0 border-b border-gray-300 bg-[#f3f3ef] px-5 py-3 sm:px-7">

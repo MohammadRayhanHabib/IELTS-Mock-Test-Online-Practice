@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent, type RefObject } from "react";
 import {
   applyCssTextHighlights,
   clearCssTextHighlights,
@@ -22,7 +22,52 @@ interface UseReadingTextAnnotationsOptions {
   annotations: ReadingAnnotation[];
   passageRenderKey?: string | number;
   onCreate: (annotation: ReadingAnnotation) => void;
+  onOpenNote?: (annotationId: string) => void;
 }
+
+interface CaretPoint {
+  node: Node;
+  offset: number;
+}
+
+const getCaretPoint = (clientX: number, clientY: number): CaretPoint | null => {
+  const caretDocument = document as Document & {
+    caretPositionFromPoint?: (x: number, y: number) => { offsetNode: Node; offset: number } | null;
+    caretRangeFromPoint?: (x: number, y: number) => Range | null;
+  };
+  const position = caretDocument.caretPositionFromPoint?.(clientX, clientY);
+  if (position) return { node: position.offsetNode, offset: position.offset };
+  const range = caretDocument.caretRangeFromPoint?.(clientX, clientY);
+  return range ? { node: range.startContainer, offset: range.startOffset } : null;
+};
+
+const getOffsetWithinRoot = (root: HTMLElement, point: CaretPoint) => {
+  if (!root.contains(point.node)) return null;
+  const range = document.createRange();
+  range.selectNodeContents(root);
+  try {
+    range.setEnd(point.node, point.offset);
+  } catch {
+    return null;
+  }
+  return range.toString().length;
+};
+
+const getPassageOffset = (passage: HTMLElement, point: CaretPoint) => {
+  const element = point.node.nodeType === Node.ELEMENT_NODE ? point.node as Element : point.node.parentElement;
+  const activeSegment = element?.closest<HTMLElement>("[data-reading-passage-segment]");
+  if (!activeSegment || !passage.contains(activeSegment)) return null;
+  const segments = Array.from(passage.querySelectorAll<HTMLElement>("[data-reading-passage-segment]"));
+  let offset = 0;
+  for (const segment of segments) {
+    if (segment === activeSegment) {
+      const localOffset = getOffsetWithinRoot(segment, point);
+      return localOffset == null ? null : offset + localOffset;
+    }
+    offset += segment.textContent?.length ?? 0;
+  }
+  return null;
+};
 
 const collectHighlights = (
   roots: HTMLElement[],
@@ -65,6 +110,7 @@ export const useReadingTextAnnotations = ({
   annotations,
   passageRenderKey,
   onCreate,
+  onOpenNote,
 }: UseReadingTextAnnotationsOptions) => {
   const toolbarRef = useRef<HTMLDivElement | null>(null);
   const rangeRef = useRef<Range | null>(null);
@@ -177,6 +223,33 @@ export const useReadingTextAnnotations = ({
     clearSelection();
   }, [clearSelection, onCreate, pendingSelection]);
 
+  const openNoteAtPoint = useCallback((event: ReactMouseEvent<HTMLElement>) => {
+    if (!onOpenNote || window.getSelection()?.isCollapsed === false) return;
+    const point = getCaretPoint(event.clientX, event.clientY);
+    if (!point) return;
+    const passage = passageRef.current;
+    const question = questionRef.current;
+    const scope = passage?.contains(point.node)
+      ? "passage"
+      : question?.contains(point.node)
+        ? "question"
+        : null;
+    if (!scope) return;
+    const offset = scope === "passage"
+      ? passage ? getPassageOffset(passage, point) : null
+      : question ? getOffsetWithinRoot(question, point) : null;
+    if (offset == null) return;
+    const clickedOffsets = [offset, Math.max(0, offset - 1)];
+    const note = annotations.find((annotation) =>
+      annotation.kind === "note" &&
+      annotation.partId === partId &&
+      annotation.scope === scope &&
+      (scope === "passage" || annotation.questionNumber === questionNumber) &&
+      clickedOffsets.some((clickedOffset) => annotation.start <= clickedOffset && clickedOffset < annotation.end),
+    );
+    if (note) onOpenNote(note.id);
+  }, [annotations, onOpenNote, partId, passageRef, questionNumber, questionRef]);
+
   useEffect(() => {
     if (!pendingSelection) return;
     const dismiss = (event?: Event) => {
@@ -197,5 +270,5 @@ export const useReadingTextAnnotations = ({
     };
   }, [clearSelection, containerRef, pendingSelection]);
 
-  return { pendingSelection, toolbarRef, captureSelection, clearSelection, saveSelection };
+  return { pendingSelection, toolbarRef, captureSelection, clearSelection, saveSelection, openNoteAtPoint };
 };
