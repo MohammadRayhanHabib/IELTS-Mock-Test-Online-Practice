@@ -234,7 +234,7 @@ const ClientPreviewSpeakingPage: React.FC = () => {
   return (
     <div data-ielts-contrast={contrastMode} data-ielts-text-size={textSize} className="ielts-exam-shell fixed inset-0 z-50 flex min-h-[680px] flex-col overflow-hidden bg-white text-[#171717]">
       <Helmet><title>Speaking Test – Lexora</title></Helmet>
-      <PreviewExamModeGate enabled />
+      <PreviewExamModeGate enabled requireFullscreen={false} />
       <ClientListeningExamHeader
         moduleLabel="Speaking"
         showAudioControls={false}

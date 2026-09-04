@@ -35,7 +35,7 @@ const ListeningMapLabellingPanel: React.FC<ListeningMapLabellingPanelProps> = ({
   registerInput,
 }) => (
   <section className="max-w-[1780px] pb-16" aria-labelledby="map-labelling-heading">
-    <ListeningQuestionTypeBanner code="L-10" name="Map Labelling" exampleCount={6} />
+    <ListeningQuestionTypeBanner code="L-05" name="Map Labelling" exampleCount={6} />
     <div className="min-w-0">
         <h2 id="map-labelling-heading" className="text-[17px] font-bold text-gray-950">
           Questions 15 - 20

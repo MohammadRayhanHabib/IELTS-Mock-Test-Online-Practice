@@ -57,7 +57,7 @@ const ListeningMcqPanel: React.FC<ListeningMcqPanelProps> = ({
 }) => (
   <section className="max-w-[1780px] pb-20" aria-labelledby="mcq-heading">
     <ListeningQuestionTypeBanner
-      code="L-04"
+      code="L-06"
       name="Multiple Choice Questions (MCQ)"
       exampleCount={2}
     />

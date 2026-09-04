@@ -34,7 +34,7 @@ const ListeningFlowChartCompletionPanel: React.FC<
     className="relative mt-14 w-full pb-16"
     aria-labelledby="listening-flow-chart-heading"
   >
-    <ListeningQuestionTypeBanner code="L-05" name="Flow-chart Completion" exampleCount={4} />
+    <ListeningQuestionTypeBanner code="L-08" name="Flow-chart Completion" exampleCount={4} />
     <h2 id="listening-flow-chart-heading" className="text-[16px] font-bold">
       Questions 27 - 30
     </h2>

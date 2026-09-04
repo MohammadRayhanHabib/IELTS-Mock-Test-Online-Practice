@@ -41,7 +41,7 @@ const ListeningShortAnswerPanel: React.FC<ListeningShortAnswerPanelProps> = ({
     className="relative w-full max-w-[1120px] pb-16"
     aria-labelledby="listening-short-answer-heading"
   >
-    <ListeningQuestionTypeBanner code="L-06" name="Short-Answer Questions" exampleCount={7} />
+    <ListeningQuestionTypeBanner code="L-09" name="Short-Answer Questions" exampleCount={7} />
     <h2 id="listening-short-answer-heading" className="text-[16px] font-bold">
       Questions 31 - 37
     </h2>

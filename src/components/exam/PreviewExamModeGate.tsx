@@ -3,6 +3,7 @@ import { FiMaximize2, FiShield } from "react-icons/fi";
 
 interface PreviewExamModeGateProps {
   enabled: boolean;
+  requireFullscreen?: boolean;
 }
 
 type WebkitDocument = Document & {
@@ -35,14 +36,17 @@ const getFullscreenElement = () => {
   return document.fullscreenElement ?? fullscreenDocument.webkitFullscreenElement ?? null;
 };
 
-const PreviewExamModeGate: React.FC<PreviewExamModeGateProps> = ({ enabled }) => {
+const PreviewExamModeGate: React.FC<PreviewExamModeGateProps> = ({
+  enabled,
+  requireFullscreen = true,
+}) => {
   const [fullscreenPromptVisible, setFullscreenPromptVisible] = useState(false);
   const [fullscreenSupported, setFullscreenSupported] = useState(true);
   const enterButtonRef = useRef<HTMLButtonElement | null>(null);
   const enteredFullscreenRef = useRef(false);
 
   const enterFullscreen = useCallback(async () => {
-    if (!enabled || typeof document === "undefined") return;
+    if (!enabled || !requireFullscreen || typeof document === "undefined") return;
 
     const root = document.documentElement as WebkitElement;
     const requestFullscreen =
@@ -71,10 +75,10 @@ const PreviewExamModeGate: React.FC<PreviewExamModeGateProps> = ({ enabled }) =>
     } catch {
       setFullscreenPromptVisible(true);
     }
-  }, [enabled]);
+  }, [enabled, requireFullscreen]);
 
   useEffect(() => {
-    if (!enabled || typeof document === "undefined") return;
+    if (!enabled || !requireFullscreen || typeof document === "undefined") return;
 
     const blockContextMenu = (event: MouseEvent) => {
       event.preventDefault();
@@ -134,14 +138,21 @@ const PreviewExamModeGate: React.FC<PreviewExamModeGateProps> = ({ enabled }) =>
         );
       }
     };
-  }, [enabled, enterFullscreen]);
+  }, [enabled, enterFullscreen, requireFullscreen]);
 
   useEffect(() => {
     if (!fullscreenPromptVisible) return;
     enterButtonRef.current?.focus();
   }, [fullscreenPromptVisible]);
 
-  if (!enabled || !fullscreenSupported || !fullscreenPromptVisible) return null;
+  if (
+    !enabled ||
+    !requireFullscreen ||
+    !fullscreenSupported ||
+    !fullscreenPromptVisible
+  ) {
+    return null;
+  }
 
   return (
     <div

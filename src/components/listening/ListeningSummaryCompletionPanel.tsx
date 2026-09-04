@@ -51,7 +51,7 @@ const ListeningSummaryCompletionPanel: React.FC<
   registerInput,
 }) => (
   <section className="max-w-[1780px] pb-20" aria-labelledby="summary-completion-heading">
-    <ListeningQuestionTypeBanner code="L-08" name="Summary Completion" exampleCount={4} />
+    <ListeningQuestionTypeBanner code="L-07" name="Summary Completion" exampleCount={4} />
     <div className="w-full min-w-0">
         <h2 id="summary-completion-heading" className="text-[16px] font-bold">
           Questions 23 - 26

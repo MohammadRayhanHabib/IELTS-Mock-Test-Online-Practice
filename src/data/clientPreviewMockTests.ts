@@ -14,9 +14,6 @@ export interface ClientPreviewMockTestConfig {
   questionMix: Record<ClientPreviewModule, string>;
 }
 
-const testPath = (path: string, testNumber: number, query = "") =>
-  `${path}?test=${testNumber}${query ? `&${query}` : ""}`;
-
 export const CLIENT_PREVIEW_MOCK_TESTS: ClientPreviewMockTestConfig[] = [
   {
     number: 1,
@@ -35,70 +32,6 @@ export const CLIENT_PREVIEW_MOCK_TESTS: ClientPreviewMockTestConfig[] = [
       READING: "All 18 reading question types",
       WRITING: "Academic Task 1 and Task 2",
       SPEAKING: "Booking, equipment check and three parts",
-    },
-  },
-  {
-    number: 2,
-    label: "Academic mix A",
-    focus: "Full 40-question Listening and Reading flow",
-    startPath: "/client-preview/mock-test/setup?test=2",
-    progressModule: "READING",
-    modulePaths: {
-      LISTENING: testPath(
-        "/client-preview/listening/pre-test",
-        2,
-      ),
-      READING: testPath("/client-preview/reading-part-1", 2, "q=1"),
-      WRITING: testPath("/client-preview/writing", 2),
-      SPEAKING: testPath("/client-preview/speaking/booking", 2),
-    },
-    questionMix: {
-      LISTENING: "Table and sentence completion lead",
-      READING: "Headings, information and completion",
-      WRITING: "Chart report and discussion essay",
-      SPEAKING: "Study, community and future plans",
-    },
-  },
-  {
-    number: 3,
-    label: "Academic mix B",
-    focus: "Visual labelling and matching emphasis",
-    startPath: "/client-preview/mock-test/setup?test=3",
-    modulePaths: {
-      LISTENING: testPath(
-        "/client-preview/listening/pre-test",
-        3,
-      ),
-      READING: testPath("/client-preview/reading-part-1", 3, "q=1"),
-      WRITING: testPath("/client-preview/writing", 3),
-      SPEAKING: testPath("/client-preview/speaking/booking", 3),
-    },
-    questionMix: {
-      LISTENING: "Map labelling, MCQ and factor matching",
-      READING: "Sentence endings, diagrams and summaries",
-      WRITING: "Process report and opinion essay",
-      SPEAKING: "Work, travel and technology",
-    },
-  },
-  {
-    number: 4,
-    label: "Academic mix C",
-    focus: "Advanced inference and classification mix",
-    startPath: "/client-preview/mock-test/setup?test=4",
-    modulePaths: {
-      LISTENING: testPath(
-        "/client-preview/listening/pre-test",
-        4,
-      ),
-      READING: testPath("/client-preview/reading-part-1", 4, "q=1"),
-      WRITING: testPath("/client-preview/writing", 4),
-      SPEAKING: testPath("/client-preview/speaking/booking", 4),
-    },
-    questionMix: {
-      LISTENING: "List matching, summary and flow chart",
-      READING: "Clued summary, classification and MCQ",
-      WRITING: "Mixed data report and problem solution",
-      SPEAKING: "Culture, environment and decision making",
     },
   },
 ];

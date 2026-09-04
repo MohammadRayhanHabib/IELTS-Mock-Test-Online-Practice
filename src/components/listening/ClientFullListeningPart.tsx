@@ -357,16 +357,16 @@ function getTaskPresentation(
   firstQuestion: number,
 ): { code: string; name: string } {
   if (task.kind === "single-choice") {
-    return { code: "L-04", name: "Multiple Choice Questions (MCQ)" };
+    return { code: "L-06", name: "Multiple Choice Questions (MCQ)" };
   }
   if (task.kind === "matching") {
-    return { code: "L-07", name: "Factor Matching" };
+    return { code: "L-10", name: "Factor Matching" };
   }
   if (task.kind === "map") {
-    return { code: "L-10", name: "Map Labelling" };
+    return { code: "L-05", name: "Map Labelling" };
   }
   if (firstQuestion >= 31) {
-    return { code: "L-08", name: "Summary Completion" };
+    return { code: "L-07", name: "Summary Completion" };
   }
   return { code: "L-01", name: "Note Completion" };
 }

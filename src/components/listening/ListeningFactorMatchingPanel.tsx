@@ -84,7 +84,7 @@ const ListeningFactorMatchingPanel: React.FC<
       aria-labelledby="listening-factor-matching-heading"
     >
       <ListeningQuestionTypeBanner
-        code="L-07"
+        code="L-10"
         name="Factor Matching"
         exampleCount={3}
         className="col-span-full mb-0"

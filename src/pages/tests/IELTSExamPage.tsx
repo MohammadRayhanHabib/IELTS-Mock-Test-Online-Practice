@@ -965,7 +965,7 @@ const IELTSExamPage: React.FC<IELTSExamPageProps> = ({ showcase = false }) => {
         <title>{testLabel} – IELTS Exam – Lexora</title>
       </Helmet>
 
-      <PreviewExamModeGate enabled={showcase} />
+      <PreviewExamModeGate enabled={showcase} requireFullscreen={false} />
 
       {/* ── GLOBAL HEADER ───────────────────────────────────── */}
       <ClientListeningExamHeader

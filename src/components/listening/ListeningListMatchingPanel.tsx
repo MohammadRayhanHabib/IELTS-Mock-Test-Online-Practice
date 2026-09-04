@@ -60,7 +60,7 @@ const ListeningListMatchingPanel: React.FC<ListeningListMatchingPanelProps> = ({
   registerInput,
 }) => (
   <section className="max-w-[1780px] pb-16" aria-labelledby="list-matching-heading">
-    <ListeningQuestionTypeBanner code="L-09" name="List Matching" exampleCount={4} />
+    <ListeningQuestionTypeBanner code="L-04" name="List Matching" exampleCount={4} />
     <h2 id="list-matching-heading" className="sr-only">
       List Matching
     </h2>

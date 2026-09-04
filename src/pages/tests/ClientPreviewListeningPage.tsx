@@ -601,7 +601,7 @@ const ClientPreviewListeningPage: React.FC = () => {
       <Helmet>
         <title>Listening Test – Lexora</title>
       </Helmet>
-      <PreviewExamModeGate enabled />
+      <PreviewExamModeGate enabled requireFullscreen={false} />
 
       <ClientListeningExamHeader
         mode="test"

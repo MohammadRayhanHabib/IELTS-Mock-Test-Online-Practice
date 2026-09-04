@@ -121,7 +121,7 @@ const ClientPreviewWritingPage: React.FC = () => {
       <Helmet>
         <title>Writing Test – Lexora</title>
       </Helmet>
-      <PreviewExamModeGate enabled />
+      <PreviewExamModeGate enabled requireFullscreen={false} />
 
       <ClientListeningExamHeader
         moduleLabel="Writing"
