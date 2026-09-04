@@ -5,13 +5,13 @@ import SummaryClueCompletionPanel from "../../../components/reading/SummaryClueC
 import TextAnswerQuestion from "./TextAnswerQuestion";
 import { answerAsArray, answerAsString, type ReadingQuestionComponentProps } from "./types";
 
-const SummaryCompletionQuestion: React.FC<ReadingQuestionComponentProps> = ({ question, answer, onChange, firstQuestionNumber, textClassName, visualVariant, flaggedQuestions, onToggleFlag }) => {
+const SummaryCompletionQuestion: React.FC<ReadingQuestionComponentProps> = ({ question, answer, onChange, firstQuestionNumber, textClassName, visualVariant, flaggedQuestions, onToggleFlag, onSelectQuestion }) => {
   const clues = (question.wordBank ?? []).filter((word) => word.trim());
   if (clues.length > 0 && visualVariant === "client-preview") {
-    return <SummaryClueCompletionPanel questionId={question._id} title={question.questionText} lines={question.options ?? []} clues={clues} answer={answerAsArray(answer)} onChange={onChange} firstQuestionNumber={firstQuestionNumber} flaggedQuestions={flaggedQuestions} onToggleFlag={onToggleFlag} />;
+    return <SummaryClueCompletionPanel questionId={question._id} title={question.questionText} lines={question.options ?? []} clues={clues} answer={answerAsArray(answer)} onChange={onChange} firstQuestionNumber={firstQuestionNumber} flaggedQuestions={flaggedQuestions} onToggleFlag={onToggleFlag} onSelectQuestion={onSelectQuestion} />;
   }
   if (countNoteCompletionGaps(question.options) > 0) {
-    return <NoteCompletionGaps lines={question.options ?? []} answer={answerAsArray(answer)} onChange={onChange} firstQuestionNumber={firstQuestionNumber} lineTextClassName={`${textClassName ?? "text-base"} text-gray-800`} showBullet={false} appearance={visualVariant === "client-preview" ? "summary-official" : "summary"} emptyLinePlaceholder="Summary paragraph…" flaggedQuestions={flaggedQuestions} onToggleFlag={onToggleFlag} />;
+    return <NoteCompletionGaps lines={question.options ?? []} answer={answerAsArray(answer)} onChange={onChange} firstQuestionNumber={firstQuestionNumber} lineTextClassName={`${textClassName ?? "text-base"} text-gray-800`} showBullet={false} appearance={visualVariant === "client-preview" ? "summary-official" : "summary"} emptyLinePlaceholder="Summary paragraph…" flaggedQuestions={flaggedQuestions} onToggleFlag={onToggleFlag} onSelectQuestion={onSelectQuestion} />;
   }
   return <TextAnswerQuestion value={answerAsString(answer)} onChange={onChange} textClassName={textClassName} />;
 };

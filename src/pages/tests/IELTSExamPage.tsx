@@ -33,6 +33,7 @@ import ClientExamSectionFooter, {
   ClientExamFooterSection,
 } from "../../components/exam/ClientExamSectionFooter";
 import ClientExamNavigationButtons from "../../components/exam/ClientExamNavigationButtons";
+import PreviewExamModeGate from "../../components/exam/PreviewExamModeGate";
 import {
   ReadingHeadingBank,
   ReadingHeadingDropZone,
@@ -964,6 +965,8 @@ const IELTSExamPage: React.FC<IELTSExamPageProps> = ({ showcase = false }) => {
         <title>{testLabel} – IELTS Exam – Lexora</title>
       </Helmet>
 
+      <PreviewExamModeGate enabled={showcase} />
+
       {/* ── GLOBAL HEADER ───────────────────────────────────── */}
       <ClientListeningExamHeader
         moduleLabel={
@@ -1446,7 +1449,7 @@ const CompactReadingQuestion: React.FC<{
   onToggleFlag: () => void;
 }> = ({ question, questionNumber, answer, setAnswer, flagged, onToggleFlag }) => (
   <div className="border-t border-gray-200 pt-6">
-    <div className="mb-4 flex items-start justify-between gap-4">
+    <div className="mb-4 flex flex-wrap items-start gap-2">
       <p className="text-base font-medium leading-relaxed text-gray-900">
         <span className="mr-2 font-bold">{questionNumber}</span>
         {question.questionText}
@@ -1933,6 +1936,7 @@ const ReadingSection: React.FC<{
                         allowDragBack={clientPreviewHeadingMatchingUi}
                         flaggedQuestions={flaggedQuestions}
                         onToggleFlag={onToggleFlag}
+                        onSelectQuestion={onSelectQuestion}
                       />
                     )}
                   <div

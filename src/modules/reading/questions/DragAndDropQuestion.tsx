@@ -3,7 +3,7 @@ import { answerAsArray, type ReadingQuestionComponentProps } from "./types";
 
 const MIME = "application/x-lexora-reading-answer";
 
-const DragAndDropQuestion: React.FC<ReadingQuestionComponentProps> = ({ question, answer, onChange, firstQuestionNumber }) => {
+const DragAndDropQuestion: React.FC<ReadingQuestionComponentProps> = ({ question, answer, onChange, firstQuestionNumber, onSelectQuestion }) => {
   const rows = question.options ?? [];
   const choices = question.wordBank ?? [];
   const values = answerAsArray(answer, rows.length);
@@ -24,7 +24,7 @@ const DragAndDropQuestion: React.FC<ReadingQuestionComponentProps> = ({ question
       </div>
       <div className="space-y-3">
         {rows.map((row, rowIndex) => (
-          <div key={`${question._id}-${rowIndex}`} className="grid items-center gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(180px,0.55fr)]">
+          <div key={`${question._id}-${rowIndex}`} onClick={() => onSelectQuestion?.(firstQuestionNumber + rowIndex)} onFocusCapture={() => onSelectQuestion?.(firstQuestionNumber + rowIndex)} className="grid items-center gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(180px,0.55fr)]">
             <p className="text-sm leading-relaxed text-gray-900"><strong className="mr-2 tabular-nums">{firstQuestionNumber + rowIndex}</strong>{row}</p>
             <button type="button" onClick={() => selected && place(rowIndex, selected)} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); place(rowIndex, event.dataTransfer.getData(MIME)); }} className={`min-h-11 border px-3 py-2 text-left text-sm ${values[rowIndex] ? "border-sky-600 bg-sky-50 text-sky-950" : "border-dashed border-gray-400 bg-white text-gray-500"}`}>{values[rowIndex] || "Drop or select an answer"}</button>
           </div>

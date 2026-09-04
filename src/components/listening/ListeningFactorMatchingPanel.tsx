@@ -118,7 +118,7 @@ const ListeningFactorMatchingPanel: React.FC<
             return (
               <div
                 key={number}
-                className="grid grid-cols-[210px_minmax(0,1fr)_auto] items-center gap-4 text-[16px]"
+                className="grid grid-cols-[210px_minmax(0,1fr)] items-center gap-4 text-[16px]"
               >
                 <button
                   ref={(element) => registerTarget(number, element)}
@@ -164,8 +164,10 @@ const ListeningFactorMatchingPanel: React.FC<
                     <strong>{number}</strong>
                   )}
                 </button>
-                <span>{label}</span>
-                <ListeningQuestionBookmark questionNumber={number} bookmarked={bookmarkedQuestions.has(number)} onToggle={onBookmarkToggle} />
+                <span className="flex min-w-0 flex-wrap items-center gap-2">
+                  <span>{label}</span>
+                  <ListeningQuestionBookmark questionNumber={number} bookmarked={bookmarkedQuestions.has(number)} onToggle={onBookmarkToggle} />
+                </span>
               </div>
             );
           })}

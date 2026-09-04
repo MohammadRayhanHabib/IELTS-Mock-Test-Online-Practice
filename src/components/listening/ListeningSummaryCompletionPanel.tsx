@@ -71,17 +71,20 @@ const ListeningSummaryCompletionPanel: React.FC<
             disciplines. He is finding
           </span>
           <InlineAnswer number={23} answers={answers} onAnswerChange={onAnswerChange} onAnswerFocus={onAnswerFocus} registerInput={registerInput} />
+          <span>the most difficult.</span>
           <ListeningQuestionBookmark questionNumber={23} bookmarked={bookmarkedQuestions.has(23)} onToggle={onBookmarkToggle} />
-          <span>the most difficult. At the moment, his course is mainly</span>
+          <span>At the moment, his course is mainly</span>
           <InlineAnswer number={24} answers={answers} onAnswerChange={onAnswerChange} onAnswerFocus={onAnswerFocus} registerInput={registerInput} />
+          <span>.</span>
           <ListeningQuestionBookmark questionNumber={24} bookmarked={bookmarkedQuestions.has(24)} onToggle={onBookmarkToggle} />
-          <span>. He will soon have an assignment which involves a study of</span>
+          <span>He will soon have an assignment which involves a study of</span>
           <InlineAnswer number={25} answers={answers} onAnswerChange={onAnswerChange} onAnswerFocus={onAnswerFocus} registerInput={registerInput} />
+          <span>.</span>
           <ListeningQuestionBookmark questionNumber={25} bookmarked={bookmarkedQuestions.has(25)} onToggle={onBookmarkToggle} />
-          <span>. He thinks there are too many</span>
+          <span>He thinks there are too many</span>
           <InlineAnswer number={26} answers={answers} onAnswerChange={onAnswerChange} onAnswerFocus={onAnswerFocus} registerInput={registerInput} />
-          <ListeningQuestionBookmark questionNumber={26} bookmarked={bookmarkedQuestions.has(26)} onToggle={onBookmarkToggle} />
           <span>and would like less of them.</span>
+          <ListeningQuestionBookmark questionNumber={26} bookmarked={bookmarkedQuestions.has(26)} onToggle={onBookmarkToggle} />
         </div>
     </div>
   </section>

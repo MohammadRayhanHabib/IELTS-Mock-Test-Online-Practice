@@ -21,6 +21,7 @@ export interface TableCompletionPanelProps {
   visualVariant?: "default" | "change-blindness-reference";
   flaggedQuestions?: ReadonlySet<number>;
   onToggleFlag?: (questionNumber: number) => void;
+  onSelectQuestion?: (questionNumber: number) => void;
 }
 
 const TableCompletionPanel: React.FC<TableCompletionPanelProps> = ({
@@ -34,6 +35,7 @@ const TableCompletionPanel: React.FC<TableCompletionPanelProps> = ({
   visualVariant = "default",
   flaggedQuestions,
   onToggleFlag,
+  onSelectQuestion,
 }) => {
   const parsed = parseTableOptions(options);
   const gapCount = countTableGapTokens(options);
@@ -66,8 +68,8 @@ const TableCompletionPanel: React.FC<TableCompletionPanelProps> = ({
 
   if (visualVariant === "change-blindness-reference") {
     return (
-      <div className="w-full overflow-x-auto pb-1">
-        <table className="w-full min-w-[700px] table-fixed border-collapse text-[16px] leading-[1.35] text-gray-900">
+      <div className="w-full min-w-0 overflow-hidden pb-1 [container-type:inline-size]">
+        <table className="w-full table-fixed border-collapse text-[clamp(0.75rem,2.2cqw,1rem)] leading-[1.35] text-gray-900">
           <colgroup>
             <col className="w-[17%]" />
             <col className="w-[26%]" />
@@ -79,7 +81,7 @@ const TableCompletionPanel: React.FC<TableCompletionPanelProps> = ({
             <tr>
               <th
                 colSpan={colCount}
-                className="border border-gray-700 px-3 py-2 text-center text-[17px] font-bold"
+                className="border border-gray-700 px-[clamp(0.35rem,1.5cqw,0.75rem)] py-2 text-center text-[clamp(0.9rem,2.4cqw,1.0625rem)] font-bold"
               >
                 {title.trim()}
               </th>
@@ -89,7 +91,7 @@ const TableCompletionPanel: React.FC<TableCompletionPanelProps> = ({
                 <th
                   key={index}
                   scope="col"
-                  className="h-[90px] border border-gray-700 px-2 py-2.5 text-left align-top font-bold leading-[1.08]"
+                  className="h-[90px] break-words border border-gray-700 px-[clamp(0.25rem,1.3cqw,0.5rem)] py-2.5 text-left align-top font-bold leading-[1.08] [overflow-wrap:anywhere]"
                 >
                   {header || "\u00A0"}
                 </th>
@@ -106,7 +108,7 @@ const TableCompletionPanel: React.FC<TableCompletionPanelProps> = ({
                   return (
                     <td
                       key={cellIndex}
-                      className="border border-gray-700 px-2.5 py-2.5 align-top"
+                      className="break-words border border-gray-700 px-[clamp(0.25rem,1.5cqw,0.625rem)] py-2.5 align-top [overflow-wrap:anywhere]"
                     >
                       <div className="leading-[1.35]">
                         {parts.map((part, partIndex) => {
@@ -144,6 +146,8 @@ const TableCompletionPanel: React.FC<TableCompletionPanelProps> = ({
                                   <input
                                     type="text"
                                     value={gapValue}
+                                    onFocus={() => onSelectQuestion?.(questionNumber)}
+                                    onClick={() => onSelectQuestion?.(questionNumber)}
                                     onChange={(event) =>
                                       setVal(gapIndex, event.target.value)
                                     }
@@ -246,6 +250,8 @@ const TableCompletionPanel: React.FC<TableCompletionPanelProps> = ({
                                   <input
                                     type="text"
                                     value={gapValue}
+                                    onFocus={() => onSelectQuestion?.(questionNumber)}
+                                    onClick={() => onSelectQuestion?.(questionNumber)}
                                     onChange={(e) =>
                                       setVal(gapIndex, e.target.value)
                                     }

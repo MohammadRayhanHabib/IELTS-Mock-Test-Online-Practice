@@ -59,7 +59,7 @@ const ListeningShortAnswerPanel: React.FC<ListeningShortAnswerPanelProps> = ({
       {SHORT_ANSWER_QUESTIONS.map((item) => (
         <div
           key={item.number}
-          className="flex items-center gap-3 text-[16px]"
+          className="flex flex-wrap items-center gap-x-3 gap-y-2 text-[16px]"
         >
           <input
             ref={(element) => registerInput(item.number, element)}
@@ -74,7 +74,7 @@ const ListeningShortAnswerPanel: React.FC<ListeningShortAnswerPanelProps> = ({
             onFocus={() => onAnswerFocus(item.number)}
             className="h-[31px] w-[210px] shrink-0 border border-[#8c8c8c] bg-white px-3 text-center text-[15px] font-semibold text-gray-900 outline-none placeholder:text-[#666] focus:border-2 focus:border-[#2589db]"
           />
-          <label htmlFor={`listening-short-answer-${item.number}`} className="flex-1">
+          <label htmlFor={`listening-short-answer-${item.number}`} className="min-w-0">
             {item.question}
           </label>
           <ListeningQuestionBookmark questionNumber={item.number} bookmarked={bookmarkedQuestions.has(item.number)} onToggle={onBookmarkToggle} />

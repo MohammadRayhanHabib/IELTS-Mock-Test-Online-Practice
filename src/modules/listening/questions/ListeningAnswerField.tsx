@@ -10,6 +10,7 @@ interface ListeningAnswerFieldProps {
   bookmarked: boolean;
   onBookmarkToggle: (number: number) => void;
   className?: string;
+  suffix?: React.ReactNode;
 }
 
 const ListeningAnswerField: React.FC<ListeningAnswerFieldProps> = ({
@@ -21,6 +22,7 @@ const ListeningAnswerField: React.FC<ListeningAnswerFieldProps> = ({
   bookmarked,
   onBookmarkToggle,
   className = "w-[120px]",
+  suffix,
 }) => (
   <span className="inline-flex min-w-0 items-center gap-1">
     <input
@@ -33,6 +35,7 @@ const ListeningAnswerField: React.FC<ListeningAnswerFieldProps> = ({
       onFocus={onFocus}
       className={`${className} h-[30px] rounded-[2px] border border-gray-400 bg-white px-2 text-center text-[14px] font-semibold text-gray-900 outline-none placeholder:text-gray-400 transition-colors focus:border-2 focus:border-[#2589db]`}
     />
+    {suffix ? <span className="ml-1">{suffix}</span> : null}
     <ListeningQuestionBookmark
       questionNumber={number}
       bookmarked={bookmarked}

@@ -124,7 +124,7 @@ export const READING_PART_1_SHOWCASE_QUESTIONS: IReadingQuestionStudent[] = [
     ],
   }),
   question(3, ReadingQuestionType.MATCHING_FEATURES, {
-    groupLabel: "R-03 · Matching Features",
+    groupLabel: "R-03 · Classification Type 2",
     instructions:
       "Match each statement with the correct feature, A–E.",
     questionText: "Urban tree features",

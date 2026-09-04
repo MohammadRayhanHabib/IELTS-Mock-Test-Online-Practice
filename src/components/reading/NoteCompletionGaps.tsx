@@ -28,6 +28,7 @@ export interface NoteCompletionGapsProps {
     | "sentence";
   flaggedQuestions?: ReadonlySet<number>;
   onToggleFlag?: (questionNumber: number) => void;
+  onSelectQuestion?: (questionNumber: number) => void;
 }
 
 const NoteCompletionGaps: React.FC<NoteCompletionGapsProps> = ({
@@ -42,6 +43,7 @@ const NoteCompletionGaps: React.FC<NoteCompletionGapsProps> = ({
   appearance = "note",
   flaggedQuestions,
   onToggleFlag,
+  onSelectQuestion,
 }) => {
   const n = countNoteCompletionGaps(lines);
   const vals = Array.from({ length: Math.max(0, n) }, (_, i) =>
@@ -93,10 +95,12 @@ const NoteCompletionGaps: React.FC<NoteCompletionGapsProps> = ({
             {qn}
           </span>
         )}
-        <input
-          type="text"
-          value={vals[globalIdx]}
-          onChange={(e) => setVal(globalIdx, e.target.value)}
+          <input
+            type="text"
+            value={vals[globalIdx]}
+            onFocus={() => onSelectQuestion?.(qn)}
+            onClick={() => onSelectQuestion?.(qn)}
+            onChange={(e) => setVal(globalIdx, e.target.value)}
           readOnly={readOnly}
           disabled={readOnly}
           aria-label={`Gap ${qn}`}

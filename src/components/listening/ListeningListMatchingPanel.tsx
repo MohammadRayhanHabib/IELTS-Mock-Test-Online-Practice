@@ -76,7 +76,7 @@ const ListeningListMatchingPanel: React.FC<ListeningListMatchingPanelProps> = ({
           onAnswerFocus={onAnswerFocus}
           registerInput={registerInput}
           bookmark={
-            <div className="flex shrink-0 gap-1" aria-label={`Review bookmarks for questions ${group.questionNumbers.join(" and ")}`}>
+            <span className="ml-2 inline-flex align-middle" aria-label={`Review bookmarks for questions ${group.questionNumbers.join(" and ")}`}>
               {group.questionNumbers.map((number) => (
                 <ListeningQuestionBookmark
                   key={number}
@@ -86,7 +86,7 @@ const ListeningListMatchingPanel: React.FC<ListeningListMatchingPanelProps> = ({
                   pattern="list-matching"
                 />
               ))}
-            </div>
+            </span>
           }
         />
       ))}
@@ -148,8 +148,8 @@ const ListMatchingGroup: React.FC<ListMatchingGroupProps> = ({
         Choose <strong>TWO</strong> correct answers.
       </p>
 
-      <div className="mt-6 flex items-start justify-between gap-8">
-        <div className="min-w-0 flex-1">
+      <div className="mt-6">
+        <div className="min-w-0">
           <div className="flex items-start gap-3 text-[17px] font-bold leading-7 text-gray-950">
             <span
               className={`flex h-[28px] min-w-[72px] items-center justify-center px-2 text-[15px] font-bold ${
@@ -158,7 +158,7 @@ const ListMatchingGroup: React.FC<ListMatchingGroupProps> = ({
             >
               {rangeLabel}
             </span>
-            <span className="pt-0.5">{group.prompt}</span>
+            <span className="min-w-0 pt-0.5">{group.prompt}{bookmark}</span>
           </div>
 
           <div className="mt-5 space-y-2.5">
@@ -203,7 +203,6 @@ const ListMatchingGroup: React.FC<ListMatchingGroupProps> = ({
             {selectedValues.length} of 2 answers selected
           </p>
         </div>
-        {bookmark}
       </div>
     </fieldset>
   );

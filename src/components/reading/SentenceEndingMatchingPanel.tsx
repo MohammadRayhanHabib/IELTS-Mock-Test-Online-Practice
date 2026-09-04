@@ -17,6 +17,7 @@ export interface SentenceEndingMatchingPanelProps {
   visualVariant?: "default" | "reference";
   flaggedQuestions?: ReadonlySet<number>;
   onToggleFlag?: (questionNumber: number) => void;
+  onSelectQuestion?: (questionNumber: number) => void;
   showBookmark?: boolean;
   bookmarked?: boolean;
   onToggleBookmark?: () => void;
@@ -35,6 +36,7 @@ const SentenceEndingMatchingPanel: React.FC<
   visualVariant = "default",
   flaggedQuestions,
   onToggleFlag,
+  onSelectQuestion,
   showBookmark = false,
   bookmarked = false,
   onToggleBookmark,
@@ -55,6 +57,7 @@ const SentenceEndingMatchingPanel: React.FC<
 
   const placeEnding = (slotIndex: number, letter: string) => {
     if (readOnly) return;
+    onSelectQuestion?.(firstQuestionNumber + slotIndex);
     const normalizedLetter = letter.trim().toUpperCase();
     if (!letters.includes(normalizedLetter)) return;
 
@@ -68,6 +71,7 @@ const SentenceEndingMatchingPanel: React.FC<
 
   const clearSlot = (slotIndex: number) => {
     if (readOnly) return;
+    onSelectQuestion?.(firstQuestionNumber + slotIndex);
     const next = [...normalizedAnswer];
     next[slotIndex] = "";
     onChange(next);
@@ -98,6 +102,8 @@ const SentenceEndingMatchingPanel: React.FC<
           return (
             <div
               key={`${questionId}-stem-${index}`}
+              onClick={() => onSelectQuestion?.(questionNumber)}
+              onFocusCapture={() => onSelectQuestion?.(questionNumber)}
               className={`flex flex-wrap items-center ${
                 referenceVariant ? "gap-4" : "gap-3"
               }`}
@@ -119,6 +125,14 @@ const SentenceEndingMatchingPanel: React.FC<
                     Incomplete sentence
                   </span>
                 )}
+                {flaggedQuestions && onToggleFlag ? (
+                  <ReadingQuestionFlagButton
+                    questionNumber={questionNumber}
+                    flagged={flaggedQuestions.has(questionNumber)}
+                    onToggle={onToggleFlag}
+                    className="-my-1 ml-2 h-9 w-9 align-middle"
+                  />
+                ) : null}
               </p>
               <div
                 role={readOnly ? undefined : "button"}
@@ -240,14 +254,6 @@ const SentenceEndingMatchingPanel: React.FC<
                   </span>
                 )}
               </div>
-              {flaggedQuestions && onToggleFlag ? (
-                <ReadingQuestionFlagButton
-                  questionNumber={questionNumber}
-                  flagged={flaggedQuestions.has(questionNumber)}
-                  onToggle={onToggleFlag}
-                  className="-my-1"
-                />
-              ) : null}
             </div>
           );
         })}

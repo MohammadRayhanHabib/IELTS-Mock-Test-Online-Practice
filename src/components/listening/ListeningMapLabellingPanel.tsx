@@ -68,7 +68,7 @@ const ListeningMapLabellingPanel: React.FC<ListeningMapLabellingPanelProps> = ({
                   return (
                     <tr key={question.number} className={isActive ? "bg-sky-50" : "hover:bg-gray-50/50"}>
                       <th className="border border-[#cfd3d7] px-5 py-4 text-left text-[16px] font-semibold text-gray-950">
-                        <span className="flex items-center justify-between gap-3">
+                        <span className="inline-flex max-w-full flex-wrap items-center gap-2">
                           <span><span className="mr-2 font-bold">{question.number}.</span>{question.label}</span>
                           <ListeningQuestionBookmark
                             questionNumber={question.number}

@@ -19,6 +19,7 @@ export interface SummaryClueCompletionPanelProps {
   readOnly?: boolean;
   flaggedQuestions?: ReadonlySet<number>;
   onToggleFlag?: (questionNumber: number) => void;
+  onSelectQuestion?: (questionNumber: number) => void;
 }
 
 const SummaryClueCompletionPanel: React.FC<
@@ -34,6 +35,7 @@ const SummaryClueCompletionPanel: React.FC<
   readOnly = false,
   flaggedQuestions,
   onToggleFlag,
+  onSelectQuestion,
 }) => {
   const gapCount = countNoteCompletionGaps(lines);
   const letters = useMemo(
@@ -50,6 +52,7 @@ const SummaryClueCompletionPanel: React.FC<
 
   const placeClue = (slotIndex: number, rawLetter: string) => {
     if (readOnly) return;
+    onSelectQuestion?.(firstQuestionNumber + slotIndex);
     const letter = rawLetter.trim().toUpperCase();
     if (!letters.includes(letter)) return;
 
@@ -63,6 +66,7 @@ const SummaryClueCompletionPanel: React.FC<
 
   const clearSlot = (slotIndex: number) => {
     if (readOnly) return;
+    onSelectQuestion?.(firstQuestionNumber + slotIndex);
     const next = [...normalizedAnswer];
     next[slotIndex] = "";
     onChange(next);
@@ -112,9 +116,11 @@ const SummaryClueCompletionPanel: React.FC<
           setOverSlot(null);
         }}
         onClick={() => {
+          onSelectQuestion?.(questionNumber);
           if (selectedLetter) placeClue(slotIndex, selectedLetter);
           else if (placedLetter && !readOnly) setSelectedLetter(placedLetter);
         }}
+        onFocus={() => onSelectQuestion?.(questionNumber)}
         onKeyDown={(event) => {
           if (event.key !== "Enter" && event.key !== " ") return;
           event.preventDefault();

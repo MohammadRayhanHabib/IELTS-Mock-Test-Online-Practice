@@ -1,8 +1,6 @@
-import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo } from "react";
 import { FiBookmark } from "react-icons/fi";
-import ReadingQuestionFlagButton, {
-  useActiveReadingQuestionNumber,
-} from "./ReadingQuestionFlagButton";
+import ReadingQuestionFlagButton from "./ReadingQuestionFlagButton";
 
 const DEFAULT_COLUMN_COUNT = 7;
 
@@ -65,53 +63,10 @@ const MatchingInformationGrid: React.FC<MatchingInformationGridProps> = ({
 }) => {
   const referenceVariant = visualVariant !== "default";
   const featuresVariant = visualVariant === "features";
-  const activeQuestionNumber = useActiveReadingQuestionNumber();
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const rowRefs = useRef<Array<HTMLTableRowElement | null>>([]);
-  const [activeFlagTop, setActiveFlagTop] = useState<number | null>(null);
   const columns = useMemo(
     () => normalizeColumns(columnLabels),
     [columnLabels],
   );
-  const activeRowIndex =
-    activeQuestionNumber === null
-      ? -1
-      : activeQuestionNumber - firstQuestionNumber;
-  const showActiveFlag =
-    activeRowIndex >= 0 &&
-    activeRowIndex < statements.length &&
-    Boolean(flaggedQuestions && onToggleFlag);
-
-  useLayoutEffect(() => {
-    const wrapper = wrapperRef.current;
-    const row = rowRefs.current[activeRowIndex];
-
-    if (!showActiveFlag || !wrapper || !row) {
-      setActiveFlagTop(null);
-      return;
-    }
-
-    const updateFlagPosition = () => {
-      const wrapperRect = wrapper.getBoundingClientRect();
-      const rowRect = row.getBoundingClientRect();
-      setActiveFlagTop(rowRect.top - wrapperRect.top + rowRect.height / 2);
-    };
-
-    updateFlagPosition();
-    const resizeObserver =
-      typeof ResizeObserver !== "undefined"
-        ? new ResizeObserver(updateFlagPosition)
-        : null;
-    resizeObserver?.observe(wrapper);
-    resizeObserver?.observe(row);
-    window.addEventListener("resize", updateFlagPosition);
-
-    return () => {
-      resizeObserver?.disconnect();
-      window.removeEventListener("resize", updateFlagPosition);
-    };
-  }, [activeRowIndex, columns.length, showActiveFlag, statements.length]);
-
   const getArr = () => {
     const n = statements.length;
     const base = Array.from({ length: n }, () => "");
@@ -136,10 +91,7 @@ const MatchingInformationGrid: React.FC<MatchingInformationGridProps> = ({
   }
 
   return (
-    <div
-      ref={wrapperRef}
-      className={`relative ${showActiveFlag ? "pr-11" : ""}`}
-    >
+    <div className="relative">
       <div
         className={
           referenceVariant
@@ -198,9 +150,6 @@ const MatchingInformationGrid: React.FC<MatchingInformationGridProps> = ({
             return (
               <tr
                 key={ri}
-                ref={(node) => {
-                  rowRefs.current[ri] = node;
-                }}
                 onClick={() => onSelectQuestion?.(qn)}
                 onFocusCapture={() => onSelectQuestion?.(qn)}
                 className={`border-b last:border-b-0 transition-colors ${
@@ -218,13 +167,25 @@ const MatchingInformationGrid: React.FC<MatchingInformationGridProps> = ({
                       : "sticky left-0 z-[1] max-w-[28rem] border-r border-gray-200 bg-white px-3 py-2.5 align-top leading-snug"
                   }
                 >
-                  <span className="font-semibold tabular-nums text-gray-900">
-                    {qn}.
-                  </span>{" "}
-                  <span className="text-gray-800">
-                    {stmt.trim() || (
-                      <span className="text-gray-400 italic">Statement…</span>
-                    )}
+                  <span className="inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1">
+                    <span>
+                      <span className="font-semibold tabular-nums text-gray-900">
+                        {qn}.
+                      </span>{" "}
+                      <span className="text-gray-800">
+                        {stmt.trim() || (
+                          <span className="text-gray-400 italic">Statement…</span>
+                        )}
+                      </span>
+                    </span>
+                    {flaggedQuestions && onToggleFlag ? (
+                      <ReadingQuestionFlagButton
+                        questionNumber={qn}
+                        flagged={flaggedQuestions.has(qn)}
+                        onToggle={onToggleFlag}
+                        className="-my-1 h-9 w-9"
+                      />
+                    ) : null}
                   </span>
                 </td>
                 {columns.map((col) => (
@@ -271,18 +232,6 @@ const MatchingInformationGrid: React.FC<MatchingInformationGridProps> = ({
         </tbody>
       </table>
       </div>
-      {showActiveFlag && activeFlagTop !== null && activeQuestionNumber !== null ? (
-        <div
-          className="absolute right-0 z-10 -translate-y-1/2"
-          style={{ top: activeFlagTop }}
-        >
-          <ReadingQuestionFlagButton
-            questionNumber={activeQuestionNumber}
-            flagged={flaggedQuestions?.has(activeQuestionNumber) ?? false}
-            onToggle={onToggleFlag!}
-          />
-        </div>
-      ) : null}
       {referenceVariant && showBookmark && (
         <button
           type="button"

@@ -24,6 +24,7 @@ export interface ListMatchingPanelProps {
     | "two-letter";
   flaggedQuestions?: ReadonlySet<number>;
   onToggleFlag?: (questionNumber: number) => void;
+  onSelectQuestion?: (questionNumber: number) => void;
 }
 
 const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
@@ -38,6 +39,7 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
   visualVariant = "list",
   flaggedQuestions,
   onToggleFlag,
+  onSelectQuestion,
 }) => {
   const choices = useMemo(() => parseStatementMatchChoices(wordBank), [wordBank]);
   const letters = useMemo(() => choices.map((c) => c.letter), [choices]);
@@ -60,6 +62,7 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
 
   const setSlot = (slotIdx: number, letter: string) => {
     if (readOnly) return;
+    onSelectQuestion?.(firstQuestionNumber + slotIdx);
     const u = letter.trim().toUpperCase();
     if (!u || !letters.includes(u)) return;
     const arr = getArr();
@@ -69,6 +72,7 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
 
   const clearSlot = (slotIdx: number) => {
     if (readOnly) return;
+    onSelectQuestion?.(firstQuestionNumber + slotIdx);
     const arr = getArr();
     arr[slotIdx] = "";
     onChange(arr);
@@ -177,7 +181,7 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
             <span>{firstQuestionNumber} - {firstQuestionNumber + 1}</span>
           </div>
           <div className="flex min-w-0 items-center gap-3">
-            <h3 className="min-w-0 flex-1 text-lg font-black leading-snug text-gray-950">
+            <h3 className="min-w-0 text-lg font-black leading-snug text-gray-950">
               {bankTitle}
             </h3>
             {flaggedQuestions && onToggleFlag ? (
@@ -195,10 +199,17 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
             const letter = allowedLetters[index];
             const checked = selectedLetters.includes(letter);
             const disabled = !checked && selectedLetters.length >= 2;
+            const questionNumber =
+              firstQuestionNumber +
+              (checked
+                ? Math.max(0, selectedLetters.indexOf(letter))
+                : Math.min(selectedLetters.length, 1));
 
             return (
               <label
                 key={letter}
+                onClick={() => onSelectQuestion?.(questionNumber)}
+                onFocusCapture={() => onSelectQuestion?.(questionNumber)}
                 className={`flex min-h-[43px] items-center gap-3 px-4 py-2 text-lg transition-colors ${
                   checked ? "bg-[#acd7f4]" : "bg-white"
                 } ${
@@ -226,9 +237,6 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
           })}
         </div>
 
-        <p className="text-right text-xs font-medium text-gray-500">
-          {selectedLetters.length} of 2 selected
-        </p>
       </div>
     );
   }
@@ -246,6 +254,8 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
             return (
               <li
                 key={`${questionId}-classification-${index}`}
+                onClick={() => onSelectQuestion?.(questionNumber)}
+                onFocusCapture={() => onSelectQuestion?.(questionNumber)}
                 className="flex flex-wrap items-center gap-x-3 gap-y-2 text-base"
               >
                 <div
@@ -404,7 +414,9 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
             return (
               <li
                 key={i}
-                className="grid grid-cols-[minmax(0,1fr)_minmax(5.5rem,7.5rem)_2.5rem] items-end gap-x-3 text-base text-gray-950"
+                onClick={() => onSelectQuestion?.(qn)}
+                onFocusCapture={() => onSelectQuestion?.(qn)}
+                className="grid grid-cols-[minmax(0,1fr)_minmax(5.5rem,7.5rem)] items-end gap-x-3 text-base text-gray-950"
               >
                 <p className="min-w-0 leading-relaxed">
                   <strong className="mr-1.5 font-bold">{qn}.</strong>
@@ -413,6 +425,7 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
                       Purpose to match…
                     </span>
                   )}
+                  {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={qn} flagged={flaggedQuestions.has(qn)} onToggle={onToggleFlag} className="-my-1 ml-2 h-9 w-9 align-middle" /> : null}
                 </p>
 
                 <div
@@ -455,7 +468,6 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
                     />
                   )}
                 </div>
-                {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={qn} flagged={flaggedQuestions.has(qn)} onToggle={onToggleFlag} className="-my-1" /> : null}
               </li>
             );
           })}
@@ -522,6 +534,8 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
           return (
             <li
               key={i}
+              onClick={() => onSelectQuestion?.(qn)}
+              onFocusCapture={() => onSelectQuestion?.(qn)}
               className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-gray-900"
             >
               <div
@@ -586,10 +600,10 @@ const ListMatchingPanel: React.FC<ListMatchingPanelProps> = ({
                     {visualVariant === "classification"
                       ? "Item to classify…"
                       : "Purpose…"}
-                  </span>
+                    </span>
                 )}
+                {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={qn} flagged={flaggedQuestions.has(qn)} onToggle={onToggleFlag} className="-my-1 ml-2 h-9 w-9 align-middle" /> : null}
               </span>
-              {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={qn} flagged={flaggedQuestions.has(qn)} onToggle={onToggleFlag} className="order-3 -my-1" /> : null}
             </li>
           );
         })}

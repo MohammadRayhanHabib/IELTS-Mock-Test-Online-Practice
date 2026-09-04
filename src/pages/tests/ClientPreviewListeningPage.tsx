@@ -9,6 +9,7 @@ import ClientExamNotesDrawer, {
   type ExamTextAnnotation,
 } from "../../components/exam/ClientExamNotesDrawer";
 import ClientExamNavigationButtons from "../../components/exam/ClientExamNavigationButtons";
+import PreviewExamModeGate from "../../components/exam/PreviewExamModeGate";
 import ClientExamOptionsOverlay, {
   ClientExamContrastMode,
   ClientExamOptionsView,
@@ -600,6 +601,7 @@ const ClientPreviewListeningPage: React.FC = () => {
       <Helmet>
         <title>Listening Test – Lexora</title>
       </Helmet>
+      <PreviewExamModeGate enabled />
 
       <ClientListeningExamHeader
         mode="test"
@@ -1032,6 +1034,7 @@ const ClientPreviewListeningPage: React.FC = () => {
                         <div className="flex items-center gap-2">
                           <AnswerField
                             number={9}
+                            suffix="the runners"
                             value={answers[9] ?? ""}
                             onChange={(value) => updateAnswer(9, value)}
                             onFocus={() => {
@@ -1044,12 +1047,12 @@ const ClientPreviewListeningPage: React.FC = () => {
                             bookmarked={flaggedQuestions.has(9)}
                             onBookmarkToggle={toggleFlag}
                           />
-                          <span>the runners</span>
                         </div>
 
                         <div className="flex items-center gap-2">
                           <AnswerField
                             number={10}
+                            suffix="for the weekly report"
                             value={answers[10] ?? ""}
                             onChange={(value) => updateAnswer(10, value)}
                             onFocus={() => {
@@ -1062,7 +1065,6 @@ const ClientPreviewListeningPage: React.FC = () => {
                             bookmarked={flaggedQuestions.has(10)}
                             onBookmarkToggle={toggleFlag}
                           />
-                          <span>for the weekly report</span>
                         </div>
                       </div>
                     </div>

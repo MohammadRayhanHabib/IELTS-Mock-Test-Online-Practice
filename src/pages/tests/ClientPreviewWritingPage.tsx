@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FiCheck, FiPause, FiPlay, FiRotateCcw } from "react-icons/fi";
 import ClientExamNavigationButtons from "../../components/exam/ClientExamNavigationButtons";
+import PreviewExamModeGate from "../../components/exam/PreviewExamModeGate";
 import ClientExamSectionFooter from "../../components/exam/ClientExamSectionFooter";
 import ClientExamNotesDrawer from "../../components/exam/ClientExamNotesDrawer";
 import ClientExamOptionsOverlay, {
@@ -120,6 +121,7 @@ const ClientPreviewWritingPage: React.FC = () => {
       <Helmet>
         <title>Writing Test – Lexora</title>
       </Helmet>
+      <PreviewExamModeGate enabled />
 
       <ClientListeningExamHeader
         moduleLabel="Writing"

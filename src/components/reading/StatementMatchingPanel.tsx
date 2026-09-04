@@ -39,6 +39,7 @@ export interface StatementMatchingPanelProps {
   readOnly?: boolean;
   flaggedQuestions?: ReadonlySet<number>;
   onToggleFlag?: (questionNumber: number) => void;
+  onSelectQuestion?: (questionNumber: number) => void;
 }
 
 const StatementMatchingPanel: React.FC<StatementMatchingPanelProps> = ({
@@ -51,6 +52,7 @@ const StatementMatchingPanel: React.FC<StatementMatchingPanelProps> = ({
   readOnly = false,
   flaggedQuestions,
   onToggleFlag,
+  onSelectQuestion,
 }) => {
   const choices = useMemo(() => parseStatementMatchChoices(wordBank), [wordBank]);
   const letters = useMemo(
@@ -70,6 +72,7 @@ const StatementMatchingPanel: React.FC<StatementMatchingPanelProps> = ({
 
   const setSlot = (slotIdx: number, letter: string) => {
     if (readOnly) return;
+    onSelectQuestion?.(firstQuestionNumber + slotIdx);
     const u = letter.trim().toUpperCase();
     if (!u || !letters.includes(u)) return;
     const arr = getArr();
@@ -79,6 +82,7 @@ const StatementMatchingPanel: React.FC<StatementMatchingPanelProps> = ({
 
   const clearSlot = (slotIdx: number) => {
     if (readOnly) return;
+    onSelectQuestion?.(firstQuestionNumber + slotIdx);
     const arr = getArr();
     arr[slotIdx] = "";
     onChange(arr);
@@ -117,6 +121,8 @@ const StatementMatchingPanel: React.FC<StatementMatchingPanelProps> = ({
           return (
             <li
               key={i}
+              onClick={() => onSelectQuestion?.(qn)}
+              onFocusCapture={() => onSelectQuestion?.(qn)}
               className="flex flex-wrap items-end gap-x-3 gap-y-2 text-sm text-gray-900 leading-relaxed"
             >
               <span className="min-w-0 flex-1">
@@ -124,6 +130,14 @@ const StatementMatchingPanel: React.FC<StatementMatchingPanelProps> = ({
                 {line.trim() || (
                   <span className="text-gray-400 italic">Statement…</span>
                 )}
+                {flaggedQuestions && onToggleFlag ? (
+                  <ReadingQuestionFlagButton
+                    questionNumber={qn}
+                    flagged={flaggedQuestions.has(qn)}
+                    onToggle={onToggleFlag}
+                    className="-my-1 ml-2 h-9 w-9 align-middle"
+                  />
+                ) : null}
               </span>
               <div
                 onDragOver={(e) => {
@@ -183,14 +197,6 @@ const StatementMatchingPanel: React.FC<StatementMatchingPanelProps> = ({
                   </div>
                 )}
               </div>
-              {flaggedQuestions && onToggleFlag ? (
-                <ReadingQuestionFlagButton
-                  questionNumber={qn}
-                  flagged={flaggedQuestions.has(qn)}
-                  onToggle={onToggleFlag}
-                  className="-my-1"
-                />
-              ) : null}
             </li>
           );
         })}

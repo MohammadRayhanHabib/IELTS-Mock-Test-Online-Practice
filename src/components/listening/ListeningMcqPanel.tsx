@@ -73,8 +73,8 @@ const ListeningMcqPanel: React.FC<ListeningMcqPanelProps> = ({
         <div className="mt-10 space-y-11">
           {MCQ_QUESTIONS.map((question) => (
             <fieldset key={question.number} className="relative min-w-0">
-              <legend className="w-full pr-14 text-[16px] font-bold leading-6">
-                <span className="flex w-full items-start gap-3">
+              <legend className="w-fit max-w-full text-[16px] font-bold leading-6">
+                <span className="flex max-w-full items-start gap-3">
                   <span
                     className={`flex h-[25px] min-w-[38px] items-center justify-center px-1 ${
                       activeQuestion === question.number
@@ -84,10 +84,12 @@ const ListeningMcqPanel: React.FC<ListeningMcqPanelProps> = ({
                   >
                     {question.number}
                   </span>
-                  <span className="min-w-0 flex-1 pt-0.5">{question.prompt}</span>
+                  <span className="min-w-0 pt-0.5">
+                    {question.prompt}
+                    <ListeningQuestionBookmark className="-my-1 ml-2" questionNumber={question.number} bookmarked={bookmarkedQuestions.has(question.number)} onToggle={onBookmarkToggle} />
+                  </span>
                 </span>
               </legend>
-              <ListeningQuestionBookmark questionNumber={question.number} bookmarked={bookmarkedQuestions.has(question.number)} onToggle={onBookmarkToggle} />
 
               <div className="ml-6 mt-4 max-w-[910px] space-y-1">
                 {question.options.map((option, optionIndex) => {

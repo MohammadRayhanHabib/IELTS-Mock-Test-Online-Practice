@@ -108,8 +108,8 @@ const ListeningTableCompletionPanel: React.FC<ListeningTableCompletionPanelProps
                 <td className="border border-[#333] px-3 py-4">
                   <span className="flex items-center gap-3">
                     <TableAnswer number={13} value={answers[13] ?? ""} onChange={onAnswerChange} onFocus={onAnswerFocus} registerInput={registerInput} />
-                    <ListeningQuestionBookmark questionNumber={13} bookmarked={bookmarkedQuestions.has(13)} onToggle={onBookmarkToggle} pattern="table" />
                     <span>centre</span>
+                    <ListeningQuestionBookmark questionNumber={13} bookmarked={bookmarkedQuestions.has(13)} onToggle={onBookmarkToggle} pattern="table" />
                   </span>
                 </td>
                 <td className="border border-[#333] px-3 py-4">

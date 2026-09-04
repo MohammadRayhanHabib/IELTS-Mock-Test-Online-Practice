@@ -18,6 +18,7 @@ export interface DiagramLabelCompletionPanelProps {
   visualVariant?: "default" | "building-structure-reference";
   flaggedQuestions?: ReadonlySet<number>;
   onToggleFlag?: (questionNumber: number) => void;
+  onSelectQuestion?: (questionNumber: number) => void;
 }
 
 const DiagramLabelCompletionPanel: React.FC<
@@ -34,6 +35,7 @@ const DiagramLabelCompletionPanel: React.FC<
   visualVariant = "default",
   flaggedQuestions,
   onToggleFlag,
+  onSelectQuestion,
 }) => {
   const gapCount = Math.max(gapHints.length, answer.length);
   const [overSlot, setOverSlot] = useState<number | null>(null);
@@ -56,6 +58,7 @@ const DiagramLabelCompletionPanel: React.FC<
 
   const setSlot = (slotIdx: number, word: string) => {
     if (readOnly) return;
+    onSelectQuestion?.(firstQuestionNumber + slotIdx);
     const w = word.trim();
     const arr = getArr();
     arr[slotIdx] = w;
@@ -64,6 +67,7 @@ const DiagramLabelCompletionPanel: React.FC<
 
   const clearSlot = (slotIdx: number) => {
     if (readOnly) return;
+    onSelectQuestion?.(firstQuestionNumber + slotIdx);
     const arr = getArr();
     arr[slotIdx] = "";
     onChange(arr);
@@ -199,7 +203,12 @@ const DiagramLabelCompletionPanel: React.FC<
             const qn = firstQuestionNumber + index;
             const value = values[index] ?? "";
             return (
-              <div key={qn} className="flex items-center gap-1">
+              <div
+                key={qn}
+                onClick={() => onSelectQuestion?.(qn)}
+                onFocusCapture={() => onSelectQuestion?.(qn)}
+                className="flex items-center gap-1"
+              >
               <label className="relative block h-[31px] min-w-0 flex-1 border border-gray-500 bg-white">
                 {!value.trim() ? (
                   <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-sm font-semibold tabular-nums text-gray-600">
@@ -279,6 +288,8 @@ const DiagramLabelCompletionPanel: React.FC<
           return (
             <div
               key={i}
+              onClick={() => onSelectQuestion?.(qn)}
+              onFocusCapture={() => onSelectQuestion?.(qn)}
               className="flex flex-wrap items-start gap-3 rounded-lg border border-gray-100 bg-white/80 p-2"
             >
               {hint ? (

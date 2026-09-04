@@ -12,6 +12,7 @@ import {
   FiVolume2,
 } from "react-icons/fi";
 import ClientExamNavigationButtons from "../../components/exam/ClientExamNavigationButtons";
+import PreviewExamModeGate from "../../components/exam/PreviewExamModeGate";
 import ClientExamSectionFooter from "../../components/exam/ClientExamSectionFooter";
 import ClientExamNotesDrawer from "../../components/exam/ClientExamNotesDrawer";
 import ClientExamOptionsOverlay, {
@@ -233,6 +234,7 @@ const ClientPreviewSpeakingPage: React.FC = () => {
   return (
     <div data-ielts-contrast={contrastMode} data-ielts-text-size={textSize} className="ielts-exam-shell fixed inset-0 z-50 flex min-h-[680px] flex-col overflow-hidden bg-white text-[#171717]">
       <Helmet><title>Speaking Test – Lexora</title></Helmet>
+      <PreviewExamModeGate enabled />
       <ClientListeningExamHeader
         moduleLabel="Speaking"
         showAudioControls={false}

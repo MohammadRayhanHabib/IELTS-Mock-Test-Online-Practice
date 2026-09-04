@@ -52,9 +52,9 @@ const ListeningFlowChartCompletionPanel: React.FC<
       {FLOW_STEPS.map((step) => (
         <div
           key={step.number}
-          className="grid min-h-[74px] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b border-[#dedede] px-5 text-[16px] last:border-b-0"
+          className="min-h-[74px] border-b border-[#dedede] px-5 text-[16px] last:border-b-0"
         >
-          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2">
+          <div className="flex min-h-[74px] flex-wrap items-center justify-center gap-x-2 gap-y-2">
             <span>{step.before}</span>
             <input
               ref={(element) => registerInput(step.number, element)}
@@ -70,8 +70,8 @@ const ListeningFlowChartCompletionPanel: React.FC<
               className="h-[31px] w-[210px] border border-[#8c8c8c] bg-white px-3 text-center text-[15px] font-semibold text-gray-900 outline-none placeholder:text-[#666] focus:border-2 focus:border-[#2589db]"
             />
             {step.after ? <span>{step.after}</span> : null}
+            <ListeningQuestionBookmark questionNumber={step.number} bookmarked={bookmarkedQuestions.has(step.number)} onToggle={onBookmarkToggle} />
           </div>
-          <ListeningQuestionBookmark questionNumber={step.number} bookmarked={bookmarkedQuestions.has(step.number)} onToggle={onBookmarkToggle} />
         </div>
       ))}
     </div>

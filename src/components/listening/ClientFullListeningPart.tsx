@@ -95,8 +95,8 @@ const TaskPanel: React.FC<TaskProps> = ({
                   onActivate={onActivate}
                   registerInput={registerInput}
                 />
-                <ListeningQuestionBookmark questionNumber={row.number} bookmarked={flaggedQuestions.has(row.number)} onToggle={onToggleFlag} />
                 {row.after ? <span> {row.after} </span> : null}
+                <ListeningQuestionBookmark className="-my-1 mx-1" questionNumber={row.number} bookmarked={flaggedQuestions.has(row.number)} onToggle={onToggleFlag} />
               </React.Fragment>
             ))}
           </div>
@@ -136,13 +136,12 @@ const TaskPanel: React.FC<TaskProps> = ({
           <div className="space-y-11">
           {task.questions.map((question) => (
             <fieldset key={question.number} className="relative max-w-[980px]">
-              <legend className="w-full pr-14 text-[16px] font-bold leading-6">
-                <span className="flex w-full items-start gap-3">
+              <legend className="w-fit max-w-full text-[16px] font-bold leading-6">
+                <span className="flex max-w-full items-start gap-3">
                   <span className={`flex h-[25px] min-w-[38px] items-center justify-center px-1 ${activeQuestion === question.number ? "border-2 border-[#1689dc] bg-white" : "border-2 border-transparent"}`}>{question.number}</span>
-                  <span className="min-w-0 flex-1 pt-0.5">{question.prompt}</span>
+                  <span className="min-w-0 pt-0.5">{question.prompt}<ListeningQuestionBookmark className="-my-1 ml-2" questionNumber={question.number} bookmarked={flaggedQuestions.has(question.number)} onToggle={onToggleFlag} /></span>
                 </span>
               </legend>
-              <ListeningQuestionBookmark questionNumber={question.number} bookmarked={flaggedQuestions.has(question.number)} onToggle={onToggleFlag} />
               <div className="ml-6 mt-4 max-w-[910px] space-y-1">
                 {question.options.map((option) => {
                   const selected = answers[question.number] === option.key;
@@ -187,7 +186,7 @@ const TaskPanel: React.FC<TaskProps> = ({
           <div className="min-w-0 overflow-x-auto">
             <table className="w-full min-w-[600px] border-collapse text-[16px]">
               <thead><tr className="bg-gray-50/80"><th className="w-[300px] border border-[#cfd3d7] px-4 py-3.5 text-center text-[16px] font-bold text-gray-950">Column 1</th>{task.options.map((option) => <th key={option} className="w-[50px] border border-[#cfd3d7] px-2 py-3.5 text-center text-[16px] font-bold text-gray-950">{option}</th>)}</tr></thead>
-              <tbody>{task.places.map((place) => <tr key={place.number} className={activeQuestion === place.number ? "bg-sky-50" : "hover:bg-gray-50/50"}><th className="border border-[#cfd3d7] px-5 py-4 text-left text-[16px] font-semibold text-gray-950"><span className="flex items-center justify-between gap-3"><span><strong className="mr-2">{place.number}.</strong>{place.label}</span><ListeningQuestionBookmark questionNumber={place.number} bookmarked={flaggedQuestions.has(place.number)} onToggle={onToggleFlag} /></span></th>{task.options.map((option) => <td key={option} className={`border border-[#cfd3d7] p-0 text-center ${answers[place.number] === option ? "bg-[#b5daf3]" : ""}`}><label className="flex min-h-[58px] cursor-pointer items-center justify-center"><input className="h-4 w-4 accent-[#1689dc]" type="radio" name={`map-${place.number}`} checked={answers[place.number] === option} onChange={() => onAnswer(place.number, option)} onFocus={() => onActivate(place.number)} aria-label={`${place.number} ${option}`} /></label></td>)}</tr>)}</tbody>
+              <tbody>{task.places.map((place) => <tr key={place.number} className={activeQuestion === place.number ? "bg-sky-50" : "hover:bg-gray-50/50"}><th className="border border-[#cfd3d7] px-5 py-4 text-left text-[16px] font-semibold text-gray-950"><span className="inline-flex max-w-full flex-wrap items-center gap-2"><span><strong className="mr-2">{place.number}.</strong>{place.label}</span><ListeningQuestionBookmark questionNumber={place.number} bookmarked={flaggedQuestions.has(place.number)} onToggle={onToggleFlag} /></span></th>{task.options.map((option) => <td key={option} className={`border border-[#cfd3d7] p-0 text-center ${answers[place.number] === option ? "bg-[#b5daf3]" : ""}`}><label className="flex min-h-[58px] cursor-pointer items-center justify-center"><input className="h-4 w-4 accent-[#1689dc]" type="radio" name={`map-${place.number}`} checked={answers[place.number] === option} onChange={() => onAnswer(place.number, option)} onFocus={() => onActivate(place.number)} aria-label={`${place.number} ${option}`} /></label></td>)}</tr>)}</tbody>
             </table>
           </div>
         </div>
@@ -241,7 +240,7 @@ const MatchingTask: React.FC<{
           const placedKey = answers[prompt.number] ?? "";
           const placedOption = optionByKey.get(placedKey);
           return (
-            <div key={prompt.number} className="grid grid-cols-[210px_minmax(0,1fr)_auto] items-center gap-4 text-[16px]">
+            <div key={prompt.number} className="grid grid-cols-[210px_minmax(0,1fr)] items-center gap-4 text-[16px]">
               <button
                 type="button"
                 draggable={Boolean(placedOption)}
@@ -274,8 +273,7 @@ const MatchingTask: React.FC<{
               >
                 {placedOption ? `${placedKey}. ${placedOption.label}` : <strong>{prompt.number}</strong>}
               </button>
-              <span>{prompt.label}</span>
-              <ListeningQuestionBookmark questionNumber={prompt.number} bookmarked={flaggedQuestions.has(prompt.number)} onToggle={onToggleFlag} />
+              <span className="flex min-w-0 flex-wrap items-center gap-2"><span>{prompt.label}</span><ListeningQuestionBookmark questionNumber={prompt.number} bookmarked={flaggedQuestions.has(prompt.number)} onToggle={onToggleFlag} /></span>
             </div>
           );
         })}

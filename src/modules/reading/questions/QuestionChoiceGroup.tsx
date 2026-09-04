@@ -12,6 +12,7 @@ interface QuestionChoiceGroupProps {
   visualVariant?: "default" | "statement-reference" | "single-choice-reference";
   flaggedQuestions?: ReadonlySet<number>;
   onToggleFlag?: (questionNumber: number) => void;
+  onSelectQuestion?: (questionNumber: number) => void;
 }
 
 const QuestionChoiceGroup: React.FC<QuestionChoiceGroupProps> = ({
@@ -25,6 +26,7 @@ const QuestionChoiceGroup: React.FC<QuestionChoiceGroupProps> = ({
   visualVariant = "default",
   flaggedQuestions,
   onToggleFlag,
+  onSelectQuestion,
 }) => {
   const normalizedAnswers = Array.from({ length: rows.length }, (_, index) => answer[index] ?? "");
 
@@ -34,11 +36,11 @@ const QuestionChoiceGroup: React.FC<QuestionChoiceGroupProps> = ({
         {rows.map((row, rowIndex) => {
           const questionNumber = firstQuestionNumber + rowIndex;
           return (
-            <fieldset key={`${questionId}-${rowIndex}`} className="min-w-0 border-0 p-0">
+            <fieldset key={`${questionId}-${rowIndex}`} onClick={() => onSelectQuestion?.(questionNumber)} onFocusCapture={() => onSelectQuestion?.(questionNumber)} className="min-w-0 border-0 p-0">
               <legend className="sr-only">Question {questionNumber}</legend>
               <div className="flex items-start gap-2">
                 <span className={`flex h-8 min-w-9 shrink-0 items-center justify-center px-1.5 text-base font-bold tabular-nums text-gray-950 ${rowIndex === 0 ? "rounded-sm border-2 border-[#1683d8] bg-white" : "border-2 border-transparent"}`}>{questionNumber}</span>
-                <p className={`min-w-0 flex-1 pt-0.5 font-bold leading-relaxed text-gray-950 ${textClassName}`}>{row}</p>
+                <p className={`min-w-0 pt-0.5 font-bold leading-relaxed text-gray-950 ${textClassName}`}>{row}</p>
                 {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={questionNumber} flagged={flaggedQuestions.has(questionNumber)} onToggle={onToggleFlag} className="-mt-1" /> : null}
               </div>
               <div className="mt-5 space-y-5 pl-12">
@@ -63,11 +65,11 @@ const QuestionChoiceGroup: React.FC<QuestionChoiceGroupProps> = ({
           const [prompt = "", ...choices] = row.split("|||");
           const questionNumber = firstQuestionNumber + rowIndex;
           return (
-            <fieldset key={`${questionId}-${rowIndex}`} className="min-w-0 border-0 p-0">
+            <fieldset key={`${questionId}-${rowIndex}`} onClick={() => onSelectQuestion?.(questionNumber)} onFocusCapture={() => onSelectQuestion?.(questionNumber)} className="min-w-0 border-0 p-0">
               <legend className="sr-only">Question {questionNumber}</legend>
               <div className="flex items-start gap-2">
                 <span className={`flex h-8 min-w-9 shrink-0 items-center justify-center px-1.5 text-base font-bold tabular-nums text-gray-950 ${rowIndex === 0 ? "rounded-sm border-2 border-[#1683d8] bg-white" : "border-2 border-transparent"}`}>{questionNumber}</span>
-                <p className={`min-w-0 flex-1 pt-0.5 font-bold leading-relaxed text-gray-950 ${textClassName}`}>{prompt}</p>
+                <p className={`min-w-0 pt-0.5 font-bold leading-relaxed text-gray-950 ${textClassName}`}>{prompt}</p>
                 {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={questionNumber} flagged={flaggedQuestions.has(questionNumber)} onToggle={onToggleFlag} className="-mt-1" /> : null}
               </div>
               <div className="mt-4 space-y-1 pl-3">
@@ -92,11 +94,11 @@ const QuestionChoiceGroup: React.FC<QuestionChoiceGroupProps> = ({
         const choices = fixedChoices ?? encodedChoices;
         const questionNumber = firstQuestionNumber + rowIndex;
         return (
-          <fieldset key={`${questionId}-${rowIndex}`} className="rounded-md border border-gray-200 bg-white p-4 shadow-sm">
+          <fieldset key={`${questionId}-${rowIndex}`} onClick={() => onSelectQuestion?.(questionNumber)} onFocusCapture={() => onSelectQuestion?.(questionNumber)} className="rounded-md border border-gray-200 bg-white p-4 shadow-sm">
             <legend className="sr-only">Question {questionNumber}</legend>
             <div className="mb-3 flex items-start gap-3">
               <span className="flex h-7 min-w-7 shrink-0 items-center justify-center rounded-sm border border-sky-600 bg-sky-50 px-1.5 text-xs font-bold tabular-nums text-sky-950">{questionNumber}</span>
-              <p className={`min-w-0 flex-1 pt-0.5 font-medium leading-relaxed text-gray-900 ${textClassName}`}>{prompt || row}</p>
+              <p className={`min-w-0 pt-0.5 font-medium leading-relaxed text-gray-900 ${textClassName}`}>{prompt || row}</p>
               {flaggedQuestions && onToggleFlag ? <ReadingQuestionFlagButton questionNumber={questionNumber} flagged={flaggedQuestions.has(questionNumber)} onToggle={onToggleFlag} className="-my-1" /> : null}
             </div>
             <div className={fixedChoices ? "grid gap-2 pl-10 sm:grid-cols-3" : "space-y-2 pl-10"}>
